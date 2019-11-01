@@ -6,3 +6,6 @@ def home(request):
 
 def login(request):
     return render(request, 'web/login.html')
+
+def app(request):
+    return render(request, 'web/index.html')
