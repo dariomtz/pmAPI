@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse, HttpResponseBadRequest, HttpResponseNotAllowed, HttpResponseNotFound
 from django.views.decorators.csrf import csrf_exempt
-from .forms import NewProject, NewTask
+from .forms import NewProject, NewTask, PutProject, PatchProject
 import json, datetime, uuid
 
 projects = {}
@@ -15,12 +15,12 @@ def all_projects(request):
     elif request.method == 'POST':#create a new project
 
         #validate input
-        np = NewProject(json.loads(request.body))
-        if not np.is_valid():
-            return HttpResponseBadRequest(np.errors.as_json(), content_type='text/json')
+        project = NewProject(json.loads(request.body))
+        if not project.is_valid():
+            return HttpResponseBadRequest(project.errors.as_json(), content_type='text/json')
         
         #creation of new object
-        body = np.cleaned_data
+        body = project.cleaned_data
         id = str(uuid.uuid4())
         new_project = {
             'kind': 'project',
@@ -59,12 +59,16 @@ def specific_project(request, projectId=None):
     elif request.method == 'POST':#post a task to the project
         
         #validate input
-        nt = NewTask(json.loads(request.body))
-        if not nt.is_valid():
-            return HttpResponseBadRequest(nt.errors.as_json(), content_type='text/json')
+        task = NewTask(json.loads(request.body))
+        if not task.is_valid():
+            response = {
+                'kind': 'error',
+                'errors': json.loads(task.errors.as_json())
+            }
+            return HttpResponseBadRequest(json.dumps(response) , content_type='text/json')
 
         #creation of new object
-        body = nt.cleaned_data
+        body = task.cleaned_data
         id = str(uuid.uuid4())
         new_task = {
             'kind': 'task',
@@ -76,7 +80,7 @@ def specific_project(request, projectId=None):
             'inCharge':[],
             'resorces': body['resources'],
             'status': 0,
-        }
+        } 
 
         #Save changes in database
         projects[str(projectId)]['tasks'][id] = new_task
@@ -84,44 +88,76 @@ def specific_project(request, projectId=None):
         return JsonResponse(new_task)
 
     elif request.method == 'PUT':#modify the entire project to these new values
-        body = json.loads(request.body)
+        
+        #validate input
+        project = PutProject(json.loads(request.body))
+        if not project.is_valid():
+            response = {
+                'kind': 'error',
+                'errors': json.loads(project.errors.as_json())
+            }
+            return HttpResponseBadRequest(json.dumps(response), content_type='text/json')
 
-        if not 'title' in body:
-            return HttpResponseBadRequest('A project cannot be updated without a "title" field.')
-        if not 'description' in body:
-            return HttpResponseBadRequest('A project cannot be updated without a "description" field.')
-        if not 'canRead' in body:
-            return HttpResponseBadRequest('A project cannot be updated without a "canRead" field.')
-        if not 'canEdit' in body:
-            return HttpResponseBadRequest('A project cannot be updated without a "canEdit" field.')
-        if not 'admins' in body:
-            return HttpResponseBadRequest('A project cannot be updated without an "admins" field.')
-        if not 'deadline' in body:
-            return HttpResponseBadRequest('A project cannot be updated without a "deadline" field.')
-        if not 'status' in body:
-            return HttpResponseBadRequest('A project cannot be updated without a "status" field.')
-
+        #creation of new object
+        body = project.cleaned_data
+        id = str(projectId)
         modified_project = {
             'kind': 'project',
-            'id': str(projectId),
+            'id': id,
             'title': body['title'], 
             'description': body['description'],
-            'created': projects[str(projectId)]['created'],
+            'created': projects[id]['created'],
             'updated': datetime.datetime.now(),
-            'canRead': body['canRead'],
-            'canEdit': body['canEdit'],
-            'admins': body['admins'],
-            'tasks': projects[str(projectId)]['tasks'],
+            'canRead': [],
+            'canEdit': [],
+            'admins': [],
+            'tasks': projects[id]['tasks'],
             'deadline': body['deadline'],
             'status': body['status'],
         }
-        
-        return
+
+        #save changes in database
+        projects[id] = modified_project
+
+        return JsonResponse(modified_project)
 
     elif request.method == 'PATCH':#modify only the changes to the resource
-        return
+
+        #validate input
+        project = PatchProject(json.loads(request.body))
+        if not project.is_valid():
+            response = {
+                'kind': 'error',
+                'errors': json.loads(project.errors.as_json())
+            }
+            return HttpResponseBadRequest(json.dumps(response), content_type='text/json')
+
+        #creation of new object
+        body = project.cleaned_data
+        id = str(projectId)
+        modified_project = {
+            'kind': 'project',
+            'id': id,
+            'title': body['title'] if 'title' in body else projects[id]['title'], 
+            'description': body['description'] if 'description' in body else projects[id]['description'],
+            'created': projects[id]['created'],
+            'updated': datetime.datetime.now(),
+            'canRead': [],
+            'canEdit': [],
+            'admins': [],
+            'tasks': projects[id]['tasks'],
+            'deadline': body['deadline'] if 'deadline' in body else projects[id]['deadline'],
+            'status': body['status'] if 'status' in body else projects[id]['status'],
+        }
+
+        #save changes in database
+        projects[id] = modified_project
+
+        return JsonResponse(modified_project)
+
     elif request.method == 'DELETE':#deletes the project
-        return
-    
+        del projects[str(projectId)]
+        return HttpResponse(status=204)
+
     else:
         return HttpResponseNotAllowed(['GET', 'POST', 'PUT', 'PATCH', 'DELETE'])
