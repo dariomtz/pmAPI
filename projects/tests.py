@@ -1,11 +1,22 @@
-import json, datetime
+import json, datetime, uuid
 from django.test import Client, TestCase
-from .views import all_projects, specific_project
 
 # Create your tests here.
 
-def assert_valid_task(task, key):
-    return
+def assert_valid_task(task):
+    assert 'kind' in task
+    assert task['kind'] == 'task'
+
+    assert 'id' in task
+    assert 'title' in task
+    assert 'description' in task
+    assert 'created' in task
+    assert 'updated' in task
+    assert 'inCharge' in task
+    assert 'deadline' in task
+    assert 'startDate' in task
+    assert 'resources' in task
+    assert 'status' in task
 
 def assert_valid_project(project):
     assert 'kind' in project
@@ -63,26 +74,7 @@ class TestAllProjectsHandler(TestCase):
 
     def setUp(self):
         self.client =  Client()
-    
-    def test_get_valid_projects(self):
 
-        response = self.client.get('/api/projects/')
-
-        self.assertEquals(response.status_code, 200)
-        
-        response_dict = response.json()
-
-        assert 'projects' in response_dict
-
-        projects = response_dict['projects']
-        for key in projects:
-            project = projects[key]
-            assert_valid_project(project)
-
-    def test_get_invalid_projects(self):
-        #assert 401 if the user doesn't exists
-        return
-    
     def test_post_valid_project(self):
         new_project = {
             'title':'This is a sample title.',
@@ -121,24 +113,131 @@ class TestAllProjectsHandler(TestCase):
 
         response_dict = json.loads(response.content, encoding='utf8')
         assert_valid_error(response_dict)
+    
+    def test_get_valid_projects(self):
 
+        response = self.client.get('/api/projects/')
+
+        self.assertEquals(response.status_code, 200)
+        
+        response_dict = response.json()
+
+        assert 'projects' in response_dict
+
+        projects = response_dict['projects']
+        for key in projects:
+            project = projects[key]
+            assert_valid_project(project)
+
+    def test_get_invalid_projects(self):
+        #assert 401 if the user doesn't exists
+        return
+    
     def test_invalid_methods(self):
         assert_invalid_methods('/api/projects/', ['PUT', 'PATCH', 'DELETE', 'TRACE', 'HEAD', 'OPTIONS'])
 
-# class TestSpecificProjectHandler(TestCase):
+class TestSpecificProjectHandler(TestCase):
 
-#     def setUp(self):
-#         self.factory = RequestFactory()
+    def setUp(self):
+        self.client = Client()
 
-#     def test_all_methods_not_found_project(self):
+    def test_all_methods_not_found_project(self):
+        response = self.client.get('/api/projects/' + str(uuid.uuid4()) + '/')
 
-#     def test_get_valid_project(self):
+        self.assertEquals(response.status_code, 404)
 
-#     def test_get_invalid_project(self):
+    def test_get_valid_project(self):
+        all_projects_request = self.client.get('/api/projects/')
+        all_projects_dict = all_projects_request.json()['projects']
 
-#     def test_post_valid_task(self):
+        self.assertEquals(all_projects_request.status_code, 200)
 
-#     def test_post_invalid_task(self):
+        for key in all_projects_dict:
+            response = self.client.get('/api/projects/' + key + '/')
+            self.assertEquals(response.status_code, 200)
+            assert_valid_project(response.json())
+
+    def test_get_invalid_project(self):
+        #assert 401 if the user doesn't have access to the project
+        return
+
+    def test_post_valid_task(self):
+        new_project = {
+            'title':'This is a sample title.',
+            'description': 'This is a sample description.',
+            'deadline': str(datetime.datetime.today())
+        }
+
+        project = self.client.post('/api/projects/', data=new_project, content_type='application/json')
+
+        self.assertEquals(project.status_code, 200)
+
+        project = project.json()
+
+        new_task = {
+            'title': 'This is a sample title for a task',
+            'description': 'This is a sample description for a task',
+            'resources': 'Sample resources',
+            'deadline': str(datetime.datetime.now()),
+            'startDate': str(datetime.datetime.today())
+        }
+
+        task = self.client.post('/api/projects/' + project['id'] + '/', data=new_task, content_type='application/json')
+        
+        self.assertEquals(task.status_code, 200)
+
+        task = task.json()
+
+        assert_valid_task(task)
+
+    def test_post_invalid_task(self):
+        
+        new_project = {
+            'title':'This is a sample title.',
+            'description': 'This is a sample description.',
+            'deadline': str(datetime.datetime.today())
+        }
+
+        project = self.client.post('/api/projects/', data=new_project, content_type='application/json')
+
+        self.assertEquals(project.status_code, 200)
+
+        project = project.json()
+
+        #test case 1
+        new_task = {
+            'title': 'This is a sample title for a task long enough to cause an error. This is a sample title for a task long enough to cause an error. This is a sample title for a task long enough to cause an error.',
+            'description': 'This is a sample description for a task',
+            'resources': 'Sample resources',
+            'deadline': 'Just not a date lol',
+            'startDate': 'Just not a date lol'
+        }
+
+        error = self.client.post('/api/projects/' + project['id'] + '/', data=new_task, content_type='application/json')
+        
+        self.assertEquals(error.status_code, 400)
+
+        error = error.json()
+
+        assert_valid_error(error)
+
+        #test case 2
+        empty_task = {
+            'title': 'This is a sample title for a task long enough to cause an error. This is a sample title for a task long enough to cause an error. This is a sample title for a task long enough to cause an error.',
+            'description': 'This is a sample description for a task',
+            'resources': 'Sample resources',
+            'deadline': 'Just not a date lol',
+            'startDate': 'Just not a date lol'
+        }
+
+        error = self.client.post('/api/projects/' + project['id'] + '/', data=empty_task, content_type='application/json')
+        
+        self.assertEquals(error.status_code, 400)
+
+        error = error.json()
+
+        assert_valid_error(error)
+
 
 #     def test_put_valid_project(self):
 

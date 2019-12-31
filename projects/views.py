@@ -4,22 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 from .forms import NewProject, NewTask, PutProject, PatchProject
 import json, datetime, uuid
 
-projects = {
-    '86b9688c-7d2d-4f53-9491-c9cf42f32132': {
-        "kind": "project",
-        "id": "86b9688c-7d2d-4f53-9491-c9cf42f32132",
-        "title": "Test project",
-        "description": "This is just a test description.",
-        "created": datetime.datetime.now(),
-        "updated": datetime.datetime.now(),
-        "canRead": [],
-        "canEdit": [],
-        "admins": [],
-        "tasks": {},
-        "deadline": "2019-12-31T10:33:58.601Z",
-        "status": 0
-    }
-}
+projects = {}
 
 @csrf_exempt
 def all_projects(request):
@@ -64,7 +49,6 @@ def all_projects(request):
     else:
         return HttpResponseNotAllowed(['GET', 'POST'])
 
-
 @csrf_exempt
 def specific_project(request, projectId=None):
 
@@ -108,7 +92,7 @@ def specific_project(request, projectId=None):
             'deadline': body['deadline'],
             'startDate': body['startDate'],
             'inCharge':[],
-            'resorces': body['resources'],
+            'resources': body['resources'],
             'status': 0,
         } 
 
