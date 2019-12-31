@@ -4,7 +4,22 @@ from django.views.decorators.csrf import csrf_exempt
 from .forms import NewProject, NewTask, PutProject, PatchProject
 import json, datetime, uuid
 
-projects = {}
+projects = {
+    '86b9688c-7d2d-4f53-9491-c9cf42f32132': {
+        "kind": "project",
+        "id": "86b9688c-7d2d-4f53-9491-c9cf42f32132",
+        "title": "Test project",
+        "description": "This is just a test description.",
+        "created": datetime.datetime.now(),
+        "updated": datetime.datetime.now(),
+        "canRead": [],
+        "canEdit": [],
+        "admins": [],
+        "tasks": {},
+        "deadline": "2019-12-31T10:33:58.601Z",
+        "status": 0
+    }
+}
 
 @csrf_exempt
 def all_projects(request):
@@ -17,7 +32,11 @@ def all_projects(request):
         #validate input
         project = NewProject(json.loads(request.body))
         if not project.is_valid():
-            return HttpResponseBadRequest(project.errors.as_json(), content_type='text/json')
+            response = {
+                'kind': 'error',
+                'errors': json.loads(project.errors.as_json())
+            }
+            return HttpResponseBadRequest(json.dumps(response), content_type='application/json')
         
         #creation of new object
         body = project.cleaned_data
@@ -51,7 +70,16 @@ def specific_project(request, projectId=None):
 
     #Validate that the project exists
     if not str(projectId) in projects:
-            return HttpResponseNotFound('A project with that id does not exist.')
+        response = {
+                'kind': 'error',
+                'errors': {
+                    'request':{
+                        'message': 'A project with that id does not exist.',
+                        'code': 'not found'
+                    }
+                }
+            }
+        return HttpResponseNotFound(json.dumps(response) , content_type='application/json')
 
     if request.method == 'GET':#gets the specific project
         return JsonResponse(projects[str(projectId)])
@@ -65,7 +93,7 @@ def specific_project(request, projectId=None):
                 'kind': 'error',
                 'errors': json.loads(task.errors.as_json())
             }
-            return HttpResponseBadRequest(json.dumps(response) , content_type='text/json')
+            return HttpResponseBadRequest(json.dumps(response) , content_type='application/json')
 
         #creation of new object
         body = task.cleaned_data
@@ -75,6 +103,8 @@ def specific_project(request, projectId=None):
             'id': id,
             'title': body['title'], 
             'description': body['description'],
+            'created': datetime.datetime.now(),
+            'updated': datetime.datetime.now(),
             'deadline': body['deadline'],
             'startDate': body['startDate'],
             'inCharge':[],
@@ -96,7 +126,7 @@ def specific_project(request, projectId=None):
                 'kind': 'error',
                 'errors': json.loads(project.errors.as_json())
             }
-            return HttpResponseBadRequest(json.dumps(response), content_type='text/json')
+            return HttpResponseBadRequest(json.dumps(response), content_type='application/json')
 
         #creation of new object
         body = project.cleaned_data
@@ -130,7 +160,7 @@ def specific_project(request, projectId=None):
                 'kind': 'error',
                 'errors': json.loads(project.errors.as_json())
             }
-            return HttpResponseBadRequest(json.dumps(response), content_type='text/json')
+            return HttpResponseBadRequest(json.dumps(response), content_type='application/json')
 
         #creation of new object
         body = project.cleaned_data
