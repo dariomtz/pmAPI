@@ -35,7 +35,7 @@ def assert_valid_project(project):
 
     assert 'tasks' in project
     for k in project['tasks']:
-        assert_valid_task(project['tasks'][k], k)
+        assert_valid_task(project['tasks'][k])
     
 def assert_valid_error(error):
     assert 'kind' in error
