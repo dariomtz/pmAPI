@@ -47,8 +47,8 @@ def assert_valid_error(error):
             assert 'message' in e
             assert 'code' in e
 
-def assert_invalid_methods(path, list_of_methods):
-    for method in list_of_methods:
+def assert_invalid_methods(path, list_of_invalid_methods):
+    for method in list_of_invalid_methods:
         if method == 'GET':
             response = Client().get(path)
         elif method == 'POST':
@@ -276,7 +276,19 @@ class TestSpecificProjectHandler(TestCase):
     
 #     def test_delete_invalid_project(self):
     
-#     def test_invalid_methods(self):
+    def test_invalid_methods(self):
+        new_project = {
+            'title': 'A sample project',
+            'description': 'A sample description'
+        }
+
+        project = self.client.post('/api/projects/', data= new_project, content_type = 'application/json')
+
+        self.assertEquals(project.status_code, 200)
+
+        project_id = project.json()['id']
+
+        assert_invalid_methods('/api/projects/' +  project_id + '/', ['OPTIONS', 'HEAD', 'TRACE'])
 
 # class TestSpecificTaskHandler(TestCase):
 
