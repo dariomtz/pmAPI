@@ -238,8 +238,33 @@ class TestSpecificProjectHandler(TestCase):
 
         assert_valid_error(error)
 
+    def test_put_valid_project(self):
+        new_project = {
+            'title': 'A salmple title.',
+            'description': 'A sample description.'
+        }
+        project = self.client.post('/api/projects/', data= new_project, content_type='application/json')
+        self.assertEquals(project.status_code, 200)
 
-#     def test_put_valid_project(self):
+        project = project.json()
+
+        new_project = {
+            'title': 'A changed salmple title.',
+            'description': 'A changed sample description.', 
+            'status': 'o'
+        }
+
+        put_project = self.client.put('/api/projects/' + project['id'] + '/', data=new_project, content_type='application/json')
+    
+        self.assertEquals(put_project.status_code, 200)
+
+        put_project = put_project.json()
+
+        assert_valid_project(put_project)
+
+        self.assertEquals(put_project['id'], project['id'])
+        self.assertEquals(put_project['created'], project['created'])
+
 
 #     def test_put_invalid_project(self):
 

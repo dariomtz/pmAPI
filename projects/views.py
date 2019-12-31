@@ -37,7 +37,7 @@ def all_projects(request):
             'canEdit':[],
             'admins':[],
             'tasks': {},
-            'deadline': body['deadline'],
+            'deadline': body['deadline'] if 'deadline' in body else None,
             'status': 0,
         }
 
