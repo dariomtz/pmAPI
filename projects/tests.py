@@ -76,10 +76,24 @@ class TestAllProjectsHandler(TestCase):
         self.client =  Client()
 
     def test_post_valid_project(self):
+        #test case 1
         new_project = {
             'title':'This is a sample title.',
             'description': 'This is a sample description.',
             'deadline': str(datetime.datetime.today())
+        }
+
+        response = self.client.post('/api/projects/', data=new_project, content_type='application/json')        
+
+        self.assertEquals(response.status_code, 200)
+
+        response_dict = response.json()
+        assert_valid_project(response_dict)
+
+        #test case 2
+        new_project = {
+            'title':'This is a sample title.',
+            'description': 'This is a sample description.'
         }
 
         response = self.client.post('/api/projects/', data=new_project, content_type='application/json')        
@@ -174,12 +188,27 @@ class TestSpecificProjectHandler(TestCase):
 
         project = project.json()
 
+        #test case 1
         new_task = {
             'title': 'This is a sample title for a task',
             'description': 'This is a sample description for a task',
             'resources': 'Sample resources',
             'deadline': str(datetime.datetime.now()),
             'startDate': str(datetime.datetime.today())
+        }
+
+        task = self.client.post('/api/projects/' + project['id'] + '/', data=new_task, content_type='application/json')
+        
+        self.assertEquals(task.status_code, 200)
+
+        task = task.json()
+
+        assert_valid_task(task)
+
+        #test case 2
+        new_task = {
+            'title': 'This is a sample title for a task',
+            'description': 'This is a sample description for a task'
         }
 
         task = self.client.post('/api/projects/' + project['id'] + '/', data=new_task, content_type='application/json')

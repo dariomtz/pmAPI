@@ -89,10 +89,10 @@ def specific_project(request, projectId=None):
             'description': body['description'],
             'created': datetime.datetime.now(),
             'updated': datetime.datetime.now(),
-            'deadline': body['deadline'],
-            'startDate': body['startDate'],
+            'deadline': body['deadline'] if 'deadline' in body else None,
+            'startDate': body['startDate'] if 'startDate' in body else None,
             'inCharge':[],
-            'resources': body['resources'],
+            'resources': body['resources'] if 'resources' in body else None,
             'status': 0,
         } 
 
