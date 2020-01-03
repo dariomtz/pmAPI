@@ -294,8 +294,28 @@ class TestSpecificProjectHandler(TestCase):
         self.assertEquals(put_project['id'], project['id'])
         self.assertEquals(put_project['created'], project['created'])
 
+    def test_put_invalid_project(self):
+        new_project = {
+            'title': 'This is a sample title',
+            'description': 'This is a sample description',
+        }
 
-#     def test_put_invalid_project(self):
+        project =  self.client.post('/api/projects/', data=new_project, content_type='application/json')
+        self.assertEquals(project.status_code, 200)
+
+        project = project.json()
+
+        new_project = {
+            'title': 'A changend invalid title. A changend invalid title. A changend invalid title. A changend invalid title. A changend invalid title. A changend invalid title. A changend invalid title. '
+        }
+
+        put_project = self.client.put('/api/projects/' + project['id'] + '/', data=new_project, content_type='application/json')
+
+        self.assertEquals(put_project.status_code, 400)
+
+        put_project = put_project.json()
+
+        assert_valid_error(put_project)
 
 #     def test_patch_valid_project(self):
 
