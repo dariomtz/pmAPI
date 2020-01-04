@@ -3,78 +3,80 @@ from django.test import Client, TestCase
 
 # Create your tests here.
 
-def assert_valid_task(task):
-    assert 'kind' in task
-    assert task['kind'] == 'task'
-
-    assert 'id' in task
-    assert 'title' in task
-    assert 'description' in task
-    assert 'created' in task
-    assert 'updated' in task
-    assert 'inCharge' in task
-    assert 'deadline' in task
-    assert 'startDate' in task
-    assert 'resources' in task
-    assert 'status' in task
-
-def assert_valid_project(project):
-    assert 'kind' in project
-    assert project['kind'] == 'project'
-
-    assert 'id' in project
-    assert 'title' in project
-    assert 'description' in project
-    assert 'created' in project
-    assert 'updated' in project
-    assert 'canRead' in project
-    assert 'canEdit' in project
-    assert 'admins' in project
-    assert 'deadline' in project
-    assert 'status' in project
-
-    assert 'tasks' in project
-    for k in project['tasks']:
-        assert_valid_task(project['tasks'][k])
-    
-def assert_valid_error(error):
-    assert 'kind' in error
-    assert error['kind'] == 'error'
-    assert 'errors' in error
-    
-    for key in error['errors']:
-        for e in error['errors'][key]:
-            assert 'message' in e
-            assert 'code' in e
-
-def assert_invalid_methods(path, list_of_invalid_methods):
-    for method in list_of_invalid_methods:
-        if method == 'GET':
-            response = Client().get(path)
-        elif method == 'POST':
-            response = Client().post(path)
-        elif method == 'PUT':
-            response = Client().put(path)
-        elif method == 'PATCH':
-            response = Client().patch(path)
-        elif method == 'DELETE':
-            response = Client().delete(path)
-        elif method == 'TRACE':
-            response = Client().trace(path)
-        elif method == 'HEAD':
-            response = Client().head(path)
-        elif method == 'OPTIONS':
-            response = Client().options(path)
-        else:
-            assert method == 'INVALID'
-        
-        assert response.status_code == 405
-
-class TestAllProjectsHandler(TestCase):
-
+class Tests(TestCase):
     def setUp(self):
         self.client =  Client()
 
+    def assert_valid_task(self, task):
+        self.assertTrue('kind' in task)
+        self.assertEquals(task['kind'], 'task')
+
+        self.assertTrue('id' in task)
+        self.assertTrue('title' in task)
+        self.assertTrue('description' in task)
+        self.assertTrue('created' in task)
+        self.assertTrue('updated' in task)
+        self.assertTrue('inCharge' in task)
+        self.assertTrue('deadline' in task)
+        self.assertTrue('startDate' in task)
+        self.assertTrue('resources' in task)
+        self.assertTrue('status' in task)
+
+    def assert_valid_project(self, project):
+        self.assertTrue('kind' in project)
+        self.assertEquals(project['kind'], 'project')
+
+        self.assertTrue('id' in project)
+        self.assertTrue('title' in project)
+        self.assertTrue('description' in project)
+        self.assertTrue('created' in project)
+        self.assertTrue('updated' in project)
+        self.assertTrue('canRead' in project)
+        self.assertTrue('canEdit' in project)
+        self.assertTrue('admins' in project)
+        self.assertTrue('deadline' in project)
+        self.assertTrue('status' in project)
+
+        for k in project['tasks']:
+            self.assert_valid_task(project['tasks'][k])
+        
+    def assert_valid_error(self, error):
+        self.assertTrue('kind' in error)
+        self.assertEquals(error['kind'], 'error')
+
+        self.assertTrue('errors' in error)
+
+        for key in error['errors']:
+            e = error['errors'][key]
+            self.assertTrue('message' in e)
+            self.assertTrue('code' in e)
+
+    def assert_invalid_methods(self, path, list_of_invalid_methods):
+        list_of_methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'TRACE', 'HEAD', 'OPTIONS']
+
+        for method in list_of_invalid_methods:
+            self.assertTrue(method in list_of_methods)
+
+            if method == 'GET':
+                response = self.client.get(path)
+            elif method == 'POST':
+                response = self.client.post(path)
+            elif method == 'PUT':
+                response = self.client.put(path)
+            elif method == 'PATCH':
+                response = self.client.patch(path)
+            elif method == 'DELETE':
+                response = self.client.delete(path)
+            elif method == 'TRACE':
+                response = self.client.trace(path)
+            elif method == 'HEAD':
+                response = self.client.head(path)
+            elif method == 'OPTIONS':
+                response = self.client.options(path)
+            
+            self.assertEquals(response.status_code, 405)
+    
+    #tests for '/api/projects/'
     def test_post_valid_project(self):
         #test case 1
         new_project = {
@@ -88,7 +90,7 @@ class TestAllProjectsHandler(TestCase):
         self.assertEquals(response.status_code, 200)
 
         response_dict = response.json()
-        assert_valid_project(response_dict)
+        self.assert_valid_project(response_dict)
 
         #test case 2
         new_project = {
@@ -101,7 +103,7 @@ class TestAllProjectsHandler(TestCase):
         self.assertEquals(response.status_code, 200)
 
         response_dict = response.json()
-        assert_valid_project(response_dict)
+        self.assert_valid_project(response_dict)
         
     def test_post_invalid_project(self):
         #test case 1
@@ -116,7 +118,7 @@ class TestAllProjectsHandler(TestCase):
         self.assertEquals(response.status_code, 400)
 
         response_dict = response.json()
-        assert_valid_error(response_dict)
+        self.assert_valid_error(response_dict)
 
         #test case 2
         empty_dict = {}
@@ -126,7 +128,7 @@ class TestAllProjectsHandler(TestCase):
         self.assertEquals(response.status_code, 400)
 
         response_dict = json.loads(response.content, encoding='utf8')
-        assert_valid_error(response_dict)
+        self.assert_valid_error(response_dict)
     
     def test_get_valid_projects(self):
 
@@ -141,20 +143,16 @@ class TestAllProjectsHandler(TestCase):
         projects = response_dict['projects']
         for key in projects:
             project = projects[key]
-            assert_valid_project(project)
+            self.assert_valid_project(project)
 
     def test_get_invalid_projects(self):
-        #assert 401 if the user doesn't exists
+        
         return
     
     def test_invalid_methods(self):
-        assert_invalid_methods('/api/projects/', ['PUT', 'PATCH', 'DELETE', 'TRACE', 'HEAD', 'OPTIONS'])
+        self.assert_invalid_methods('/api/projects/', ['PUT', 'PATCH', 'DELETE', 'TRACE', 'HEAD', 'OPTIONS'])
 
-class TestSpecificProjectHandler(TestCase):
-
-    def setUp(self):
-        self.client = Client()
-
+    #tests for '/api/projects/uuid/'
     def test_all_methods_not_found_project(self):
         response = self.client.get('/api/projects/' + str(uuid.uuid4()) + '/')
 
@@ -169,10 +167,10 @@ class TestSpecificProjectHandler(TestCase):
         for key in all_projects_dict:
             response = self.client.get('/api/projects/' + key + '/')
             self.assertEquals(response.status_code, 200)
-            assert_valid_project(response.json())
+            self.assert_valid_project(response.json())
 
     def test_get_invalid_project(self):
-        #assert 401 if the user doesn't have access to the project
+        
         return
 
     def test_post_valid_task(self):
@@ -203,7 +201,7 @@ class TestSpecificProjectHandler(TestCase):
 
         task = task.json()
 
-        assert_valid_task(task)
+        self.assert_valid_task(task)
 
         #test case 2
         new_task = {
@@ -217,7 +215,7 @@ class TestSpecificProjectHandler(TestCase):
 
         task = task.json()
 
-        assert_valid_task(task)
+        self.assert_valid_task(task)
 
     def test_post_invalid_task(self):
         
@@ -248,7 +246,7 @@ class TestSpecificProjectHandler(TestCase):
 
         error = error.json()
 
-        assert_valid_error(error)
+        self.assert_valid_error(error)
 
         #test case 2
         empty_task = {
@@ -265,7 +263,7 @@ class TestSpecificProjectHandler(TestCase):
 
         error = error.json()
 
-        assert_valid_error(error)
+        self.assert_valid_error(error)
 
     def test_put_valid_project(self):
         new_project = {
@@ -289,7 +287,7 @@ class TestSpecificProjectHandler(TestCase):
 
         put_project = put_project.json()
 
-        assert_valid_project(put_project)
+        self.assert_valid_project(put_project)
 
         self.assertEquals(put_project['id'], project['id'])
         self.assertEquals(put_project['created'], project['created'])
@@ -315,7 +313,7 @@ class TestSpecificProjectHandler(TestCase):
 
         put_project = put_project.json()
 
-        assert_valid_error(put_project)
+        self.assert_valid_error(put_project)
 
 #     def test_patch_valid_project(self):
 
@@ -337,7 +335,7 @@ class TestSpecificProjectHandler(TestCase):
 
         project_id = project.json()['id']
 
-        assert_invalid_methods('/api/projects/' +  project_id + '/', ['OPTIONS', 'HEAD', 'TRACE'])
+        self.assert_invalid_methods('/api/projects/' +  project_id + '/', ['OPTIONS', 'HEAD', 'TRACE'])
 
 # class TestSpecificTaskHandler(TestCase):
 
