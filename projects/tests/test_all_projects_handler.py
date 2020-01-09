@@ -59,7 +59,7 @@ class TestAllProjectsHandler(AssertHelper):
         
         all_projects = response.json()
 
-        self.assertTrue('projects' in all_projects)
+        self.assertIn('projects', all_projects)
 
         projects = all_projects['projects']
         for key in projects:
