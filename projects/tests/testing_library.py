@@ -138,4 +138,4 @@ class AssertHelper(TestCase):
 
         error = response.json()
 
-        self.assert_valid_task(error)
+        self.assert_valid_error(error)

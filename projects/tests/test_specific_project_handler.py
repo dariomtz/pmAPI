@@ -41,36 +41,45 @@ class TestSpecificProjectHandler(AssertHelper):
 
         self.assert_post_valid_task(new_task)
 
-    def test_post_invalid_task(self):
-        project_id = self.valid_project_id()
-        
-        #test case 1
+    def test_post_invalid_task_bad_title(self):
         new_task = {
             'title': 'This is a sample title for a task long enough to cause an error. This is a sample title for a task long enough to cause an error. This is a sample title for a task long enough to cause an error.',
             'description': 'This is a sample description for a task',
-            'resources': 'Sample resources',
-            'deadline': 'Just not a date lol',
-            'startDate': 'Just not a date lol'
         }
 
-        response = self.client.post('/api/projects/' + project_id + '/', data=new_task, content_type='application/json')
+        self.assert_post_invalid_task(new_task)
+
+    def test_post_invalid_task_missing_title(self):
+        new_task = {
+            'description': 'This is a sample description for a task',
+        }
+
+        self.assert_post_invalid_task(new_task)
+
+    def test_post_invalid_task_missing_description(self):
+        new_task = {
+            'title': 'Valid title'
+        }
+
+        self.assert_post_invalid_task(new_task)
+    
+    def test_post_invalid_task_bad_deadline(self):
+        new_task = {
+            'title': 'Valid title',
+            'description': 'Valid description',
+            'deadline': 'Not a date'
+        }
         
-        self.assertEquals(response.status_code, 400)
+        self.assert_post_invalid_task(new_task)
 
-        error = response.json()
+    def test_post_invalid_task_bad_startDate(self):
+        new_task = {
+            'title': 'Valid title',
+            'description': 'Valid description',
+            'startDate': 'Not a date'
+        }
 
-        self.assert_valid_error(error)
-
-        #test case 2
-        empty_task = {}
-
-        error = self.client.post('/api/projects/' + project_id + '/', data=empty_task, content_type='application/json')
-        
-        self.assertEquals(error.status_code, 400)
-
-        error = error.json()
-
-        self.assert_valid_error(error)
+        self.assert_post_invalid_task(new_task)
 
     def test_put_valid_project(self):
         new_project = {
