@@ -31,13 +31,7 @@ class TestSpecificProjectHandler(AssertHelper):
             'startDate': str(datetime.datetime.today())
         }
 
-        response = self.client.post('/api/projects/' + self.valid_project_id() + '/', data=new_task, content_type='application/json')
-        
-        self.assertEquals(response.status_code, 200)
-
-        task = response.json()
-
-        self.assert_valid_task(task)
+        self.assert_post_valid_task(new_task)
     
     def test_post_valid_task_without_optional_params(self):
         new_task = {
@@ -45,13 +39,7 @@ class TestSpecificProjectHandler(AssertHelper):
             'description': 'This is a sample description for a task'
         }
 
-        task = self.client.post('/api/projects/' + self.valid_project_id() + '/', data=new_task, content_type='application/json')
-        
-        self.assertEquals(task.status_code, 200)
-
-        task = task.json()
-
-        self.assert_valid_task(task)
+        self.assert_post_valid_task(new_task)
 
     def test_post_invalid_task(self):
         project_id = self.valid_project_id()
