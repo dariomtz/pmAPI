@@ -2,7 +2,7 @@ import datetime, uuid
 from .testing_library import AssertHelper
 
 class TestSpecificProjectHandler(AssertHelper):
-    def test_all_methods_not_found_project(self):
+    def test_not_found_project(self):
         response = self.client.get('/api/projects/' + str(uuid.uuid4()) + '/')
 
         self.assertEquals(response.status_code, 404)
@@ -22,9 +22,7 @@ class TestSpecificProjectHandler(AssertHelper):
         
         return
 
-    def test_post_valid_task(self):
-        project_id = self.valid_project_id()
-        #test case 1: With all the possible fields
+    def test_post_valid_task_complete(self):    
         new_task = {
             'title': 'This is a sample title for a task',
             'description': 'This is a sample description for a task',
@@ -33,21 +31,21 @@ class TestSpecificProjectHandler(AssertHelper):
             'startDate': str(datetime.datetime.today())
         }
 
-        response = self.client.post('/api/projects/' + project_id + '/', data=new_task, content_type='application/json')
+        response = self.client.post('/api/projects/' + self.valid_project_id() + '/', data=new_task, content_type='application/json')
         
         self.assertEquals(response.status_code, 200)
 
         task = response.json()
 
         self.assert_valid_task(task)
-
-        #test case 2: Without the optional fields
+    
+    def test_post_valid_task_without_optional_params(self):
         new_task = {
             'title': 'This is a sample title for a task',
             'description': 'This is a sample description for a task'
         }
 
-        task = self.client.post('/api/projects/' + project_id + '/', data=new_task, content_type='application/json')
+        task = self.client.post('/api/projects/' + self.valid_project_id() + '/', data=new_task, content_type='application/json')
         
         self.assertEquals(task.status_code, 200)
 
