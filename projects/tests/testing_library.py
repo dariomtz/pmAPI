@@ -37,55 +37,55 @@ class AssertHelper(TestCase):
         return task['id']
 
     def assert_valid_task(self, task):
-        self.assertTrue('kind' in task)
+        self.assertIn('kind', task)
         self.assertEquals(task['kind'], 'task')
 
-        self.assertTrue('id' in task)
-        self.assertTrue('title' in task)
-        self.assertTrue('description' in task)
-        self.assertTrue('created' in task)
-        self.assertTrue('updated' in task)
-        self.assertTrue('inCharge' in task)
-        self.assertTrue('deadline' in task)
-        self.assertTrue('startDate' in task)
-        self.assertTrue('resources' in task)
-        self.assertTrue('status' in task)
+        self.assertIn('id', task)
+        self.assertIn('title', task)
+        self.assertIn('description', task)
+        self.assertIn('created', task)
+        self.assertIn('updated', task)
+        self.assertIn('inCharge', task)
+        self.assertIn('deadline', task)
+        self.assertIn('startDate', task)
+        self.assertIn('resources', task)
+        self.assertIn('status', task)
 
     def assert_valid_project(self, project):
-        self.assertTrue('kind' in project)
+        self.assertIn('kind', project)
         self.assertEquals(project['kind'], 'project')
 
-        self.assertTrue('id' in project)
-        self.assertTrue('title' in project)
-        self.assertTrue('description' in project)
-        self.assertTrue('created' in project)
-        self.assertTrue('updated' in project)
-        self.assertTrue('canRead' in project)
-        self.assertTrue('canEdit' in project)
-        self.assertTrue('admins' in project)
-        self.assertTrue('deadline' in project)
-        self.assertTrue('status' in project)
+        self.assertIn('id', project)
+        self.assertIn('title', project)
+        self.assertIn('description', project)
+        self.assertIn('created', project)
+        self.assertIn('updated', project)
+        self.assertIn('canRead', project)
+        self.assertIn('canEdit', project)
+        self.assertIn('admins', project)
+        self.assertIn('deadline', project)
+        self.assertIn('status', project)
 
         for k in project['tasks']:
             self.assert_valid_task(project['tasks'][k])
         
     def assert_valid_error(self, error):
-        self.assertTrue('kind' in error)
+        self.assertIn('kind', error)
         self.assertEquals(error['kind'], 'error')
 
-        self.assertTrue('errors' in error)
+        self.assertIn('errors', error)
 
         for key in error['errors']:
             e = error['errors'][key]
             for specific_error in e:
-                self.assertTrue('message' in specific_error)
-                self.assertTrue('code' in specific_error)
+                self.assertIn('message', specific_error)
+                self.assertIn('code', specific_error)
 
     def assert_invalid_methods(self, path, list_of_invalid_methods):
         list_of_methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'TRACE', 'HEAD', 'OPTIONS']
 
         for method in list_of_invalid_methods:
-            self.assertTrue(method in list_of_methods)
+            self.assertIn(method, list_of_methods)
 
             if method == 'GET':
                 response = self.client.get(path)
