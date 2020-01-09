@@ -122,8 +122,8 @@ class Tests(TestCase):
 
         self.assertEquals(response.status_code, 200)
 
-        response_dict = response.json()
-        self.assert_valid_project(response_dict)
+        project = response.json()
+        self.assert_valid_project(project)
 
         #test case 2
         new_project = {
@@ -135,8 +135,8 @@ class Tests(TestCase):
 
         self.assertEquals(response.status_code, 200)
 
-        response_dict = response.json()
-        self.assert_valid_project(response_dict)
+        project = response.json()
+        self.assert_valid_project(project)
         
     def test_post_invalid_project(self):
         #test case 1
@@ -150,8 +150,8 @@ class Tests(TestCase):
 
         self.assertEquals(response.status_code, 400)
 
-        response_dict = response.json()
-        self.assert_valid_error(response_dict)
+        error = response.json()
+        self.assert_valid_error(error)
 
         #test case 2
         empty_dict = {}
@@ -160,8 +160,8 @@ class Tests(TestCase):
 
         self.assertEquals(response.status_code, 400)
 
-        response_dict = json.loads(response.content, encoding='utf8')
-        self.assert_valid_error(response_dict)
+        error = response.json()
+        self.assert_valid_error(error)
     
     def test_get_valid_projects(self):
 
@@ -169,11 +169,11 @@ class Tests(TestCase):
 
         self.assertEquals(response.status_code, 200)
         
-        response_dict = response.json()
+        all_projects = response.json()
 
-        assert 'projects' in response_dict
+        self.assertTrue('projects' in all_projects)
 
-        projects = response_dict['projects']
+        projects = all_projects['projects']
         for key in projects:
             project = projects[key]
             self.assert_valid_project(project)
@@ -217,11 +217,11 @@ class Tests(TestCase):
             'startDate': str(datetime.datetime.today())
         }
 
-        task = self.client.post('/api/projects/' + project_id + '/', data=new_task, content_type='application/json')
+        response = self.client.post('/api/projects/' + project_id + '/', data=new_task, content_type='application/json')
         
-        self.assertEquals(task.status_code, 200)
+        self.assertEquals(response.status_code, 200)
 
-        task = task.json()
+        task = response.json()
 
         self.assert_valid_task(task)
 
@@ -251,11 +251,11 @@ class Tests(TestCase):
             'startDate': 'Just not a date lol'
         }
 
-        error = self.client.post('/api/projects/' + project_id + '/', data=new_task, content_type='application/json')
+        response = self.client.post('/api/projects/' + project_id + '/', data=new_task, content_type='application/json')
         
-        self.assertEquals(error.status_code, 400)
+        self.assertEquals(response.status_code, 400)
 
-        error = error.json()
+        error = response.json()
 
         self.assert_valid_error(error)
 
@@ -277,11 +277,11 @@ class Tests(TestCase):
             'status': 'o'
         }
 
-        put_project = self.client.put('/api/projects/' + self.valid_project_id() + '/', data=new_project, content_type='application/json')
+        response = self.client.put('/api/projects/' + self.valid_project_id() + '/', data=new_project, content_type='application/json')
     
-        self.assertEquals(put_project.status_code, 200)
+        self.assertEquals(response.status_code, 200)
 
-        put_project = put_project.json()
+        put_project = response.json()
 
         self.assert_valid_project(put_project)
 
@@ -290,15 +290,25 @@ class Tests(TestCase):
             'title': 'A changend invalid title. A changend invalid title. A changend invalid title. A changend invalid title. A changend invalid title. A changend invalid title. A changend invalid title. '
         }
 
-        put_project = self.client.put('/api/projects/' + self.valid_project_id() + '/', data=new_project, content_type='application/json')
+        response = self.client.put('/api/projects/' + self.valid_project_id() + '/', data=new_project, content_type='application/json')
 
-        self.assertEquals(put_project.status_code, 400)
+        self.assertEquals(response.status_code, 400)
 
-        put_project = put_project.json()
+        put_project = response.json()
 
         self.assert_valid_error(put_project)
 
-    # def test_patch_valid_project(self):
+    def test_patch_valid_project(self):
+        new_project = {
+            'title': 'New title.',
+            'description': 'New description.'            
+        }
+
+        response = self.client.patch('/api/projects/' + self.valid_project_id() + '/', data=new_project, content_type='application/json')
+
+        patched_project = response.json()
+
+        self.assert_valid_project(patched_project)
 
 #     def test_patch_invalid_project(self):
 
@@ -306,19 +316,9 @@ class Tests(TestCase):
     
 #     def test_delete_invalid_project(self):
     
-    def test_invalid_methods(self):
-        new_project = {
-            'title': 'A sample project',
-            'description': 'A sample description'
-        }
+    def test_invalid_methods_2(self):
 
-        project = self.client.post('/api/projects/', data= new_project, content_type = 'application/json')
-
-        self.assertEquals(project.status_code, 200)
-
-        project_id = project.json()['id']
-
-        self.assert_invalid_methods('/api/projects/' +  project_id + '/', ['OPTIONS', 'HEAD', 'TRACE'])
+        self.assert_invalid_methods('/api/projects/' +  self.valid_project_id() + '/', ['OPTIONS', 'HEAD', 'TRACE'])
 
 # class TestSpecificTaskHandler(TestCase):
 
