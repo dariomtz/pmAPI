@@ -7,6 +7,38 @@ class Tests(TestCase):
     def setUp(self):
         self.client =  Client()
 
+    def valid_project_id(self):
+        new_project = {
+            'title': 'This is a sample title',
+            'description' : 'This is a sample description'
+        }
+
+        response = self.client.post('/api/projects/', data=new_project, content_type='application/json')
+
+        self.assertEquals(response.status_code, 200)
+
+        project = response.json()
+
+        self.assert_valid_project(project)
+
+        return project['id']
+
+    def valid_task_id(self):
+        new_task = {
+            'title': 'Sample task title.',
+            'description': 'Sample task description'
+        }
+
+        response = self.client.post('/api/projects/' + self.valid_project_id() + '/', data=new_task, content_type='application/json')
+
+        self.assertEquals(response.status_code, 200)
+
+        task = response.json()
+
+        self.assert_valid_task(task)
+
+        return task['id']
+
     def assert_valid_task(self, task):
         self.assertTrue('kind' in task)
         self.assertEquals(task['kind'], 'task')
@@ -48,8 +80,9 @@ class Tests(TestCase):
 
         for key in error['errors']:
             e = error['errors'][key]
-            self.assertTrue('message' in e)
-            self.assertTrue('code' in e)
+            for specific_error in e:
+                self.assertTrue('message' in specific_error)
+                self.assertTrue('code' in specific_error)
 
     def assert_invalid_methods(self, path, list_of_invalid_methods):
         list_of_methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'TRACE', 'HEAD', 'OPTIONS']
@@ -174,19 +207,8 @@ class Tests(TestCase):
         return
 
     def test_post_valid_task(self):
-        new_project = {
-            'title':'This is a sample title.',
-            'description': 'This is a sample description.',
-            'deadline': str(datetime.datetime.today())
-        }
-
-        project = self.client.post('/api/projects/', data=new_project, content_type='application/json')
-
-        self.assertEquals(project.status_code, 200)
-
-        project = project.json()
-
-        #test case 1
+        project_id = self.valid_project_id()
+        #test case 1: With all the possible fields
         new_task = {
             'title': 'This is a sample title for a task',
             'description': 'This is a sample description for a task',
@@ -195,7 +217,7 @@ class Tests(TestCase):
             'startDate': str(datetime.datetime.today())
         }
 
-        task = self.client.post('/api/projects/' + project['id'] + '/', data=new_task, content_type='application/json')
+        task = self.client.post('/api/projects/' + project_id + '/', data=new_task, content_type='application/json')
         
         self.assertEquals(task.status_code, 200)
 
@@ -203,13 +225,13 @@ class Tests(TestCase):
 
         self.assert_valid_task(task)
 
-        #test case 2
+        #test case 2: Without the optional fields
         new_task = {
             'title': 'This is a sample title for a task',
             'description': 'This is a sample description for a task'
         }
 
-        task = self.client.post('/api/projects/' + project['id'] + '/', data=new_task, content_type='application/json')
+        task = self.client.post('/api/projects/' + project_id + '/', data=new_task, content_type='application/json')
         
         self.assertEquals(task.status_code, 200)
 
@@ -218,19 +240,8 @@ class Tests(TestCase):
         self.assert_valid_task(task)
 
     def test_post_invalid_task(self):
+        project_id = self.valid_project_id()
         
-        new_project = {
-            'title':'This is a sample title.',
-            'description': 'This is a sample description.',
-            'deadline': str(datetime.datetime.today())
-        }
-
-        project = self.client.post('/api/projects/', data=new_project, content_type='application/json')
-
-        self.assertEquals(project.status_code, 200)
-
-        project = project.json()
-
         #test case 1
         new_task = {
             'title': 'This is a sample title for a task long enough to cause an error. This is a sample title for a task long enough to cause an error. This is a sample title for a task long enough to cause an error.',
@@ -240,7 +251,7 @@ class Tests(TestCase):
             'startDate': 'Just not a date lol'
         }
 
-        error = self.client.post('/api/projects/' + project['id'] + '/', data=new_task, content_type='application/json')
+        error = self.client.post('/api/projects/' + project_id + '/', data=new_task, content_type='application/json')
         
         self.assertEquals(error.status_code, 400)
 
@@ -249,15 +260,9 @@ class Tests(TestCase):
         self.assert_valid_error(error)
 
         #test case 2
-        empty_task = {
-            'title': 'This is a sample title for a task long enough to cause an error. This is a sample title for a task long enough to cause an error. This is a sample title for a task long enough to cause an error.',
-            'description': 'This is a sample description for a task',
-            'resources': 'Sample resources',
-            'deadline': 'Just not a date lol',
-            'startDate': 'Just not a date lol'
-        }
+        empty_task = {}
 
-        error = self.client.post('/api/projects/' + project['id'] + '/', data=empty_task, content_type='application/json')
+        error = self.client.post('/api/projects/' + project_id + '/', data=empty_task, content_type='application/json')
         
         self.assertEquals(error.status_code, 400)
 
@@ -267,21 +272,12 @@ class Tests(TestCase):
 
     def test_put_valid_project(self):
         new_project = {
-            'title': 'A salmple title.',
-            'description': 'A sample description.'
-        }
-        project = self.client.post('/api/projects/', data= new_project, content_type='application/json')
-        self.assertEquals(project.status_code, 200)
-
-        project = project.json()
-
-        new_project = {
             'title': 'A changed salmple title.',
             'description': 'A changed sample description.', 
             'status': 'o'
         }
 
-        put_project = self.client.put('/api/projects/' + project['id'] + '/', data=new_project, content_type='application/json')
+        put_project = self.client.put('/api/projects/' + self.valid_project_id() + '/', data=new_project, content_type='application/json')
     
         self.assertEquals(put_project.status_code, 200)
 
@@ -289,25 +285,12 @@ class Tests(TestCase):
 
         self.assert_valid_project(put_project)
 
-        self.assertEquals(put_project['id'], project['id'])
-        self.assertEquals(put_project['created'], project['created'])
-
     def test_put_invalid_project(self):
-        new_project = {
-            'title': 'This is a sample title',
-            'description': 'This is a sample description',
-        }
-
-        project =  self.client.post('/api/projects/', data=new_project, content_type='application/json')
-        self.assertEquals(project.status_code, 200)
-
-        project = project.json()
-
         new_project = {
             'title': 'A changend invalid title. A changend invalid title. A changend invalid title. A changend invalid title. A changend invalid title. A changend invalid title. A changend invalid title. '
         }
 
-        put_project = self.client.put('/api/projects/' + project['id'] + '/', data=new_project, content_type='application/json')
+        put_project = self.client.put('/api/projects/' + self.valid_project_id() + '/', data=new_project, content_type='application/json')
 
         self.assertEquals(put_project.status_code, 400)
 
@@ -315,7 +298,7 @@ class Tests(TestCase):
 
         self.assert_valid_error(put_project)
 
-#     def test_patch_valid_project(self):
+    # def test_patch_valid_project(self):
 
 #     def test_patch_invalid_project(self):
 
