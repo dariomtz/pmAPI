@@ -37,7 +37,7 @@ def all_projects(request):
             'canEdit':[],
             'admins':[],
             'tasks': {},
-            'deadline': str(body['deadline'].replace(tzinfo=None)) if 'deadline' in body else None,
+            'deadline': str(body['deadline'].replace(tzinfo=None)) if 'deadline' in body and body['deadline'] != None else None,
             'status': 0,
         }
 
@@ -89,8 +89,8 @@ def specific_project(request, projectId=None):
             'description': body['description'],
             'created': str(datetime.datetime.now()),
             'updated': str(datetime.datetime.now()),
-            'deadline': str(body['deadline'].replace(tzinfo=None)) if 'deadline' in body else None,
-            'startDate': str(body['startDate'].replace(tzinfo=None)) if 'startDate' in body else None,
+            'deadline': str(body['deadline'].replace(tzinfo=None)) if 'deadline' in body and body['deadline'] != None else None,
+            'startDate': str(body['startDate'].replace(tzinfo=None)) if 'startDate' in body and body['startDate'] != None else None,
             'inCharge':[],
             'resources': body['resources'] if 'resources' in body else None,
             'status': 0,
@@ -160,7 +160,7 @@ def specific_project(request, projectId=None):
             'canEdit': [],
             'admins': [],
             'tasks': projects[id]['tasks'],
-            'deadline': str(body['deadline'].replace(tzinfo=None)) if 'deadline' in body else projects[id]['deadline'],
+            'deadline': str(body['deadline'].replace(tzinfo=None)) if 'deadline' in body and body['deadline'] != None else projects[id]['deadline'],
             'status': body['status'] if 'status' in body else projects[id]['status'],
         }
 
