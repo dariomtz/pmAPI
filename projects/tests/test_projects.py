@@ -1,12 +1,35 @@
 import datetime, uuid
-from .testing_library import AssertHelper
+from .project_testing_helper import ProjectTestingHelper
 
-class TestSpecificProjectHandler(AssertHelper):
+class TestProjects(ProjectTestingHelper):
+    def test_invalid_methods(self):
+        self.assert_invalid_methods('/api/projects/', ['PUT', 'PATCH', 'DELETE', 'TRACE', 'HEAD', 'OPTIONS'])
+        self.assert_invalid_methods('/api/projects/' +  self.valid_project_id() + '/', ['OPTIONS', 'HEAD', 'TRACE'])
+
     def test_not_found_project(self):
         response = self.client.get('/api/projects/' + str(uuid.uuid4()) + '/')
 
         self.assertEquals(response.status_code, 404)
 
+    def test_get_valid_projects(self):
+
+        response = self.client.get('/api/projects/')
+
+        self.assertEquals(response.status_code, 200)
+        
+        all_projects = response.json()
+
+        self.assertIn('projects', all_projects)
+
+        projects = all_projects['projects']
+        for key in projects:
+            project = projects[key]
+            self.assert_valid_project(project)
+
+    def test_get_invalid_projects(self):
+        
+        return
+    
     def test_get_valid_project(self):
         all_projects_request = self.client.get('/api/projects/')
         all_projects_dict = all_projects_request.json()['projects']
@@ -22,66 +45,56 @@ class TestSpecificProjectHandler(AssertHelper):
         
         return
 
-    def test_post_valid_task_complete(self):    
-        new_task = {
-            'title': 'This is a sample title for a task',
-            'description': 'This is a sample description for a task',
-            'resources': 'Sample resources',
-            'deadline': str(datetime.datetime.now()),
-            'startDate': str(datetime.datetime.today())
+    def test_post_valid_project_complete(self):
+        new_project = {
+            'title':'This is a sample title.',
+            'description': 'This is a sample description.',
+            'deadline': str(datetime.datetime.today())
         }
 
-        self.assert_post_valid_task(new_task)
+        self.assert_post_valid_project(new_project)
     
-    def test_post_valid_task_without_optional_params(self):
-        new_task = {
-            'title': 'This is a sample title for a task',
-            'description': 'This is a sample description for a task'
+    def test_post_valid_project_missing_deadline(self):
+        new_project = {
+            'title':'This is a sample title.',
+            'description': 'This is a sample description.'
         }
 
-        self.assert_post_valid_task(new_task)
+        self.assert_post_valid_project(new_project)    
 
-    def test_post_invalid_task_bad_title(self):
-        new_task = {
-            'title': 'This is a sample title for a task long enough to cause an error. This is a sample title for a task long enough to cause an error. This is a sample title for a task long enough to cause an error.',
-            'description': 'This is a sample description for a task',
+    def test_post_invalid_project_invalid_title(self): 
+        new_project = {
+            'title':'This is a sample title with more than 100 chars. This is a sample title with more than 100 chars. This is a sample title with more than 100 chars.',
+            'description': 'This is a sample description.',
+            'deadline': str(datetime.datetime.today())
         }
 
-        self.assert_post_invalid_task(new_task)
+        self.assert_post_invalid_project(new_project)
 
-    def test_post_invalid_task_missing_title(self):
-        new_task = {
-            'description': 'This is a sample description for a task',
+    def test_post_invalid_project_missing_title(self):
+        new_project = {
+            'description': 'A valid description'
         }
 
-        self.assert_post_invalid_task(new_task)
+        self.assert_post_invalid_project(new_project)
 
-    def test_post_invalid_task_missing_description(self):
-        new_task = {
+    def test_post_invalid_project_missing_description(self):
+        new_project = {
             'title': 'Valid title'
         }
 
-        self.assert_post_invalid_task(new_task)
-    
-    def test_post_invalid_task_bad_deadline(self):
-        new_task = {
+        self.assert_post_invalid_project(new_project)
+
+    def test_post_invalid_project_deadline(self):
+        new_project = {
             'title': 'Valid title',
             'description': 'Valid description',
             'deadline': 'Not a date'
         }
         
-        self.assert_post_invalid_task(new_task)
+        self.assert_post_invalid_project(new_project)
 
-    def test_post_invalid_task_bad_startDate(self):
-        new_task = {
-            'title': 'Valid title',
-            'description': 'Valid description',
-            'startDate': 'Not a date'
-        }
-
-        self.assert_post_invalid_task(new_task)
-
-    def test_put_valid_project(self):
+    def test_put_valid_project_status_true(self):
         new_project = {
             'title': 'A changed salmple title.',
             'description': 'A changed sample description.', 
@@ -131,6 +144,5 @@ class TestSpecificProjectHandler(AssertHelper):
     
 #     def test_delete_invalid_project(self):
     
-    def test_invalid_methods_2(self):
 
-        self.assert_invalid_methods('/api/projects/' +  self.valid_project_id() + '/', ['OPTIONS', 'HEAD', 'TRACE'])
+
