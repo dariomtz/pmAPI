@@ -99,16 +99,22 @@ class TestProjects(ProjectTestingHelper):
             'title': 'A changed salmple title.',
             'description': 'A changed sample description.', 
             'deadline': str(datetime.datetime.now()),
+            'status': True
+        }
+
+        self.assert_put_valid_project(new_project)
+
+    def test_put_valid_project_status_false(self):
+        new_project = {
+            'title': 'A changed salmple title.',
+            'description': 'A changed sample description.', 
+            'deadline': str(datetime.datetime.now()),
             'status': False
         }
 
-        response = self.client.put('/api/projects/' + self.valid_project_id() + '/', data=new_project, content_type='application/json')
-    
-        self.assertEquals(response.status_code, 200)
+        self.assert_put_valid_project(new_project)
 
-        put_project = response.json()
-
-        self.assert_valid_project(put_project)
+    def test_put_invalid_project_invalid_title(self):
 
     def test_put_invalid_project(self):
         #test case 1
