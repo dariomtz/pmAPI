@@ -102,7 +102,9 @@ class TestProjects(ProjectTestingHelper):
             'status': True
         }
 
-        self.assert_put_valid_project(new_project)
+        response = self.assert_put_valid_project(new_project)
+
+        self.assertEquals(response['status'], True)
 
     def test_put_valid_project_status_false(self):
         new_project = {
@@ -112,7 +114,9 @@ class TestProjects(ProjectTestingHelper):
             'status': False
         }
 
-        self.assert_put_valid_project(new_project)
+        response = self.assert_put_valid_project(new_project)
+
+        self.assertEquals(response['status'], False)
 
     def test_put_invalid_project_invalid_title(self):
         new_project = {
@@ -142,7 +146,10 @@ class TestProjects(ProjectTestingHelper):
             'status': 'Not a boolean lol'
         }
 
-        self.assert_put_invalid_project(new_project)
+        response = self.assert_put_invalid_project(new_project)
+
+        self.assertEquals(response['errors']['status'][0]['message'], 'Enter a valid boolean value.')
+        self.assertEquals(response['errors']['status'][0]['code'], 'invalid')
 
     def test_put_invalid_project_missing_title(self):
         new_project = {

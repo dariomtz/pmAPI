@@ -19,8 +19,10 @@ class PutProject(forms.Form):
     status = forms.NullBooleanField()
     
     def clean_status(self):
-        if self.cleaned_data['status'] == None:
-            raise forms.ValidationError('Enter a valid boolean value', code='invalid')
+        data = self.cleaned_data['status']
+        if data == None:
+            raise forms.ValidationError('Enter a valid boolean value.', code='invalid')
+        return data
 
 class PatchProject(forms.Form):
     title = forms.CharField(max_length=100, required=False)
