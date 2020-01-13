@@ -115,6 +115,70 @@ class TestProjects(ProjectTestingHelper):
         self.assert_put_valid_project(new_project)
 
     def test_put_invalid_project_invalid_title(self):
+        new_project = {
+            'title': 'Very large invalid title. Very large invalid title. Very large invalid title. Very large invalid title.Very large invalid title. Very large invalid title. Very large invalid title. Very large invalid title. Very large invalid title.',
+            'description': 'Valid description.',
+            'deadline': str(datetime.datetime.now()),
+            'status': False
+        }
+
+        self.assert_put_invalid_project(new_project)
+
+    def test_put_invalid_project_invalid_date(self):
+        new_project = {
+            'title': 'A valid title',
+            'description': 'A valid description',
+            'deadline': 'Not a date lol',
+            'status': False
+        }
+
+        self.assert_put_invalid_project(new_project)
+
+    def test_put_invalid_project_invalid_status(self):
+        new_project = {
+            'title': 'A valid title',
+            'description': 'A valid description',
+            'deadline': str(datetime.datetime.now()),
+            'status': 'Not a boolean lol'
+        }
+
+        self.assert_put_invalid_project(new_project)
+
+    def test_put_invalid_project_missing_title(self):
+        new_project = {
+            'description': 'A changed sample description.', 
+            'deadline': str(datetime.datetime.now()),
+            'status': False
+        }
+
+        self.assert_put_invalid_project(new_project)
+
+    def test_put_invalid_project_missing_description(self):
+        new_project = {
+            'title': 'A changed salmple title.',
+            'deadline': str(datetime.datetime.now()),
+            'status': False
+        }
+
+        self.assert_put_invalid_project(new_project)
+
+    def test_put_invalid_project_missing_deadline(self):
+        new_project = {
+            'title': 'A valid title',
+            'description': 'A valid description',
+            'status': False
+        }
+
+        self.assert_put_invalid_project(new_project)
+
+    def test_put_invalid_project_missing_status(self):
+        new_project = {
+            'title': 'A valid title',
+            'description': 'A valid description',
+            'deadline': str(datetime.datetime.now()),
+        }
+
+        self.assert_put_invalid_project(new_project)
 
     def test_put_invalid_project(self):
         #test case 1
