@@ -17,6 +17,10 @@ class PutProject(forms.Form):
     description = forms.CharField()
     deadline = forms.DateTimeField()
     status = forms.NullBooleanField()
+    
+    def clean_status(self):
+        if self.cleaned_data['status'] == None:
+            raise forms.ValidationError('Enter a valid boolean value', code='invalid')
 
 class PatchProject(forms.Form):
     title = forms.CharField(max_length=100, required=False)
