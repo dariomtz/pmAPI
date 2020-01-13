@@ -9,6 +9,8 @@ class ProjectTestingHelper(AssertHelper):
 
         project = response.json()
         self.assert_valid_project(project)  
+        
+        return project
 
     def assert_post_invalid_project(self, new_project):
         response = self.client.post('/api/projects/', data=new_project, content_type='application/json')
@@ -17,6 +19,8 @@ class ProjectTestingHelper(AssertHelper):
 
         error = response.json()
         self.assert_valid_error(error) 
+        
+        return error
 
     def assert_put_valid_project(self, project):
         response = self.client.put('/api/projects/' + self.valid_project_id() + '/', data=project, content_type='application/json')
@@ -27,6 +31,8 @@ class ProjectTestingHelper(AssertHelper):
 
         self.assert_valid_project(put_project)
 
+        return put_project
+
     def assert_put_invalid_project(self, project):
         response = self.client.put('/api/projects/' + self.valid_project_id() + '/', data=project, content_type='application/json')
     
@@ -35,6 +41,8 @@ class ProjectTestingHelper(AssertHelper):
         error = response.json()
 
         self.assert_valid_error(error)
+
+        return error
 
     def assert_patch_valid_project(self, project):
         response = self.client.patch('/api/projects/' + self.valid_project_id() + '/', data= project, content_type= 'application/json')
@@ -45,6 +53,8 @@ class ProjectTestingHelper(AssertHelper):
 
         self.assert_valid_project(patch_project)
 
+        return patch_project
+
     def assert_patch_invalid_project(self, project):
         response = self.client.patch('/api/projects/' + self.valid_project_id() + '/', data= project, content_type= 'application/json')
 
@@ -53,4 +63,6 @@ class ProjectTestingHelper(AssertHelper):
         error = response.json()
 
         self.assert_valid_error(error)
+
+        return error
 
