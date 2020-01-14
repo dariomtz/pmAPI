@@ -4,7 +4,7 @@ from .project_testing_helper import ProjectTestingHelper
 class TestProjects(ProjectTestingHelper):
     def test_invalid_methods(self):
         self.assert_invalid_methods('/api/projects/', ['PUT', 'PATCH', 'DELETE', 'TRACE', 'HEAD', 'OPTIONS'])
-        self.assert_invalid_methods('/api/projects/' +  self.valid_project_id() + '/', ['OPTIONS', 'HEAD', 'TRACE'])
+        self.assert_invalid_methods('/api/projects/' +  self.valid_project_id() + '/', ['OPTIONS', 'HEAD', 'TRACE', 'PATCH'])
 
     def test_not_found_project(self):
         response = self.client.get('/api/projects/' + str(uuid.uuid4()) + '/')
@@ -186,47 +186,6 @@ class TestProjects(ProjectTestingHelper):
         }
 
         self.assert_put_invalid_project(new_project)
-
-    def test_patch_valid_project_title(self):
-        new_project = {
-            'title': 'New title.',        
-        }
-
-        response = self.assert_patch_valid_project(new_project)
-
-        self.assertEquals(response['title'], 'New title.')
-
-    def test_patch_valid_project_description(self):
-        new_project = {
-            'description': 'A totally new description'
-        }
-
-        response = self.assert_patch_valid_project(new_project)
-
-        self.assertEquals(response['description'], 'A totally new description')
-
-    def test_patch_valid_project_deadline(self):
-        date = str(datetime.datetime.now())
-
-        new_project = {
-            'deadline': date
-        }
-
-        response = self.assert_patch_valid_project(new_project)
-
-        self.assertEquals(response['deadline'], date)
-
-    def test_patch_valid_project_status(self):
-        new_project = {
-            'status': True
-        }
-
-        response = self.assert_patch_valid_project(new_project)
-
-        self.assertTrue(response['status'])
-
-    def test_patch_invalid_project(self):
-        return
 
 #     def test_delete_valid_project(self):
     

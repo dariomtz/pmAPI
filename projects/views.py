@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse, HttpResponseBadRequest, HttpResponseNotAllowed, HttpResponseNotFound
 from django.views.decorators.csrf import csrf_exempt
-from .forms import NewProject, NewTask, PutProject, PatchProject
+from .forms import NewProject, NewTask, PutProject
 import json, datetime, uuid
 
 projects = {}
@@ -135,43 +135,9 @@ def specific_project(request, projectId=None):
 
         return JsonResponse(modified_project)
 
-    elif request.method == 'PATCH':#modify only the changes to the resource
-
-        #validate input
-        project = PatchProject(json.loads(request.body))
-        if not project.is_valid():
-            response = {
-                'kind': 'error',
-                'errors': json.loads(project.errors.as_json())
-            }
-            return HttpResponseBadRequest(json.dumps(response), content_type='application/json')
-
-        #creation of new object
-        body = project.cleaned_data
-        id = str(projectId)
-        modified_project = {
-            'kind': 'project',
-            'id': id,
-            'title': body['title'] if 'title' in body else projects[id]['title'], 
-            'description': body['description'] if 'description' in body else projects[id]['description'],
-            'created': projects[id]['created'],
-            'updated': str(datetime.datetime.now()),
-            'canRead': [],
-            'canEdit': [],
-            'admins': [],
-            'tasks': projects[id]['tasks'],
-            'deadline': str(body['deadline'].replace(tzinfo=None)) if 'deadline' in body and body['deadline'] != None else projects[id]['deadline'],
-            'status': body['status'] if 'status' in body else projects[id]['status'],
-        }
-
-        #save changes in database
-        projects[id] = modified_project
-
-        return JsonResponse(modified_project)
-
     elif request.method == 'DELETE':#deletes the project
         del projects[str(projectId)]
         return HttpResponse(status=204)
 
     else:
-        return HttpResponseNotAllowed(['GET', 'POST', 'PUT', 'PATCH', 'DELETE'])
+        return HttpResponseNotAllowed(['GET', 'POST', 'PUT', 'DELETE'])

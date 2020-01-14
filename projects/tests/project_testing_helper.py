@@ -43,26 +43,3 @@ class ProjectTestingHelper(AssertHelper):
         self.assert_valid_error(error)
 
         return error
-
-    def assert_patch_valid_project(self, project):
-        response = self.client.patch('/api/projects/' + self.valid_project_id() + '/', data= project, content_type= 'application/json')
-
-        self.assertEquals(response.status_code, 200)
-
-        patch_project = response.json()
-
-        self.assert_valid_project(patch_project)
-
-        return patch_project
-
-    def assert_patch_invalid_project(self, project):
-        response = self.client.patch('/api/projects/' + self.valid_project_id() + '/', data= project, content_type= 'application/json')
-
-        self.assertEquals(response.status_code, 200)
-
-        error = response.json()
-
-        self.assert_valid_error(error)
-
-        return error
-

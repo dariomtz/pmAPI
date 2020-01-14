@@ -23,11 +23,3 @@ class PutProject(forms.Form):
         if data == None:
             raise forms.ValidationError('Enter a valid boolean value.', code='invalid')
         return data
-
-class PatchProject(forms.Form):
-    title = forms.CharField(max_length=100, required=False)
-    description = forms.CharField(required=False)
-    deadline = forms.DateTimeField(required=False)
-    status = forms.NullBooleanField(required=False)
-
-    
