@@ -187,9 +187,13 @@ class TestProjects(ProjectTestingHelper):
 
         self.assert_put_invalid_project(new_project)
 
-#     def test_delete_valid_project(self):
+    def test_delete_valid_project(self):
+        response = self.client.delete('/api/projects/' + self.valid_project_id() + '/')
+
+        self.assertEquals(response.status_code, 204)
     
-#     def test_delete_invalid_project(self):
+    def test_delete_invalid_project(self):
+        return
     
 
 
