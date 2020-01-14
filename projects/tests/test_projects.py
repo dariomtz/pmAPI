@@ -187,32 +187,43 @@ class TestProjects(ProjectTestingHelper):
 
         self.assert_put_invalid_project(new_project)
 
-    def test_put_invalid_project(self):
-        #test case 1
+    def test_patch_valid_project_title(self):
         new_project = {
-            'title': 'A changend invalid title. A changend invalid title. A changend invalid title. A changend invalid title. A changend invalid title. A changend invalid title. A changend invalid title. '
+            'title': 'New title.',        
         }
 
-        response = self.client.put('/api/projects/' + self.valid_project_id() + '/', data=new_project, content_type='application/json')
+        response = self.assert_patch_valid_project(new_project)
 
-        self.assertEquals(response.status_code, 400)
+        self.assertEquals(response['title'], 'New title.')
 
-        put_project = response.json()
-
-        self.assert_valid_error(put_project)
-
-    def test_patch_valid_project(self):
+    def test_patch_valid_project_description(self):
         new_project = {
-            'title': 'New title.',
-            'description': 'New description.',
-            'status': True,            
+            'description': 'A totally new description'
         }
 
-        response = self.client.patch('/api/projects/' + self.valid_project_id() + '/', data=new_project, content_type='application/json')
+        response = self.assert_patch_valid_project(new_project)
 
-        patched_project = response.json()
+        self.assertEquals(response['description'], 'A totally new description')
 
-        self.assert_valid_project(patched_project)
+    def test_patch_valid_project_deadline(self):
+        date = str(datetime.datetime.now())
+
+        new_project = {
+            'deadline': date
+        }
+
+        response = self.assert_patch_valid_project(new_project)
+
+        self.assertEquals(response['deadline'], date)
+
+    def test_patch_valid_project_status(self):
+        new_project = {
+            'status': True
+        }
+
+        response = self.assert_patch_valid_project(new_project)
+
+        self.assertTrue(response['status'])
 
     def test_patch_invalid_project(self):
         return
