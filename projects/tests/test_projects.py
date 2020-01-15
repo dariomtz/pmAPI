@@ -11,6 +11,8 @@ class TestProjects(ProjectTestingHelper):
 
         self.assertEquals(response.status_code, 404)
 
+        self.assert_valid_error(response.json())
+
     def test_get_valid_projects(self):
 
         response = self.client.get('/api/projects/')
