@@ -4,12 +4,20 @@ from .task_testing_helper import TaskTestingHelper
 class TestTasks(TaskTestingHelper):
     def test_invalid_methods(self):
         self.assert_invalid_methods('/api/projects/' + self.valid_project_id() + '/' + self.valid_task_id() + '/',
-        ['OPTIONS', 'HEAD', 'TRACE', 'PATCH'])
+        ['OPTIONS', 'HEAD', 'TRACE', 'PATCH', 'POST'])
 
     def test_get_not_found_task(self):
         response = self.client.get('/api/projects/' + self.valid_project_id() + '/' + str(uuid.uuid4()) + '/')
+        
+        self.assertEquals(response.status_code, 404)
+
+        self.assert_valid_error(response.json())
+
+        response = self.client.get('/api/projects/' + str(uuid.uuid4()) + '/' + self.valid_task_id()  + '/')
 
         self.assertEquals(response.status_code, 404)
+
+        self.assert_valid_error(response.json())
 
     def test_get_valid_task(self):
         response = self.client.get('/api/projects/' + self.valid_project_id() + '/' + self.valid_task_id() + '/')
