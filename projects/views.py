@@ -147,10 +147,13 @@ def specific_task(request, projectId=None, taskId=None):
         response = {
                 'kind': 'error',
                 'errors': {
-                    'request':{
+                    'request':[
+                        {
                         'message': 'A project or task with that id does not exist.',
                         'code': 'not found'
-                    }
+                        }
+                    ]
+                        
                 }
             }
         return HttpResponseNotFound(json.dumps(response) , content_type='application/json')
