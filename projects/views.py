@@ -141,3 +141,18 @@ def specific_project(request, projectId=None):
 
     else:
         return HttpResponseNotAllowed(['GET', 'POST', 'PUT', 'DELETE'])
+
+def specific_task(request, projectId=None, taskId=None):
+    if not str(projectId) in projects or not str(taskId) in projects[str(projectId)]['tasks']:
+        response = {
+                'kind': 'error',
+                'errors': {
+                    'request':{
+                        'message': 'A project or task with that id does not exist.',
+                        'code': 'not found'
+                    }
+                }
+            }
+        return HttpResponseNotFound(json.dumps(response) , content_type='application/json')
+
+    
