@@ -90,5 +90,31 @@ class TestTasks(TaskTestingHelper):
 
         self.assert_post_invalid_task(new_task)
 
+    def test_put_valid_task_status_true(self):
+        task = {
+            'title':'Valid title',
+            'description': 'Valid description',
+            'deadline': None,
+            'startDate': None,
+            'resources': '',
+            'status': True,
+        }
 
+        response = self.assert_put_valid_task(task)
+
+        self.assertTrue(response['status'])
+
+    def test_put_valid_task_status_false(self):
+        task = {
+            'title':'Valid title',
+            'description': 'Valid description',
+            'deadline': None,
+            'startDate': None,
+            'resources': '',
+            'status': False,
+        }
+
+        response = self.assert_put_valid_task(task)
+
+        self.assertFalse(response['status'])
         
