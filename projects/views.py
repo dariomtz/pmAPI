@@ -163,4 +163,8 @@ def specific_task(request, projectId=None, taskId=None):
             }
         return HttpResponseNotFound(json.dumps(response) , content_type='application/json')
 
-    
+    if request.method == 'GET': 
+        return JsonResponse(projects[str(projectId)]['tasks'][str(taskId)])
+
+    if True:
+        return HttpResponseNotAllowed(['GET', 'PUT', 'DELETE'])
