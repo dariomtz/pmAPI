@@ -57,10 +57,13 @@ def specific_project(request, projectId=None):
         response = {
                 'kind': 'error',
                 'errors': {
-                    'request':{
+                    'request':[
+                        {
                         'message': 'A project with that id does not exist.',
                         'code': 'not found'
-                    }
+                        }
+                    ]
+                        
                 }
             }
         return HttpResponseNotFound(json.dumps(response) , content_type='application/json')
