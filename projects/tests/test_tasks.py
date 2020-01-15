@@ -96,6 +96,7 @@ class TestTasks(TaskTestingHelper):
             'description': 'Valid description',
             'deadline': None,
             'startDate': None,
+            'inCharge': [],
             'resources': '',
             'status': True,
         }
@@ -110,6 +111,7 @@ class TestTasks(TaskTestingHelper):
             'description': 'Valid description',
             'deadline': None,
             'startDate': None,
+            'inCharge': [],
             'resources': '',
             'status': False,
         }
@@ -117,4 +119,128 @@ class TestTasks(TaskTestingHelper):
         response = self.assert_put_valid_task(task)
 
         self.assertFalse(response['status'])
+
+    def test_put_invalid_task_bad_title(self):
+        task = {
+            'title':'Very long invalid title. Very long invalid title. Very long invalid title. Very long invalid title. Very long invalid title. ',
+            'description': 'Valid description',
+            'deadline': None,
+            'startDate': None,
+            'resources': '',
+            'inCharge': [],
+            'status': False,
+        }
+
+        self.assert_put_invalid_task(task)
+
+    def test_put_invalid_task_bad_deadline(self):
+        task = {
+            'title':'Valid title',
+            'description': 'Valid description',
+            'deadline': 'Not a date',
+            'startDate': None,
+            'inCharge': [],
+            'resources': '',
+            'status': False,
+        }
+
+        self.assert_put_invalid_task(task)
+
+    def test_put_invalid_task_bad_startDate(self):
+        task = {
+            'title':'Valid title',
+            'description': 'Valid description',
+            'deadline': None,
+            'startDate': 'Not a date',
+            'inCharge': [],
+            'resources': '',
+            'status': False,
+        }
+
+        self.assert_put_invalid_task(task)
+
+    def test_put_invalid_task_status(self):
+        task = {
+            'title':'Valid title',
+            'description': 'Valid description',
+            'deadline': None,
+            'startDate': None,
+            'inCharge': [],
+            'resources': '',
+            'status': None,
+        }
+
+        self.assert_put_invalid_task(task)
+
+    def test_put_invalid_task_missing_title(self):
+        task = {
+            'description': 'Valid description',
+            'deadline': None,
+            'startDate': None,
+            'inCharge': [],
+            'resources': '',
+            'status': False,
+        }
+
+        self.assert_put_invalid_task(task)
+
+    def test_put_invalid_task_missing_description(self):
+        task = {
+            'title':'Valid title',
+            'deadline': None,
+            'startDate': None,
+            'inCharge': [],
+            'resources': '',
+            'status': False,
+        }
+
+        self.assert_put_invalid_task(task)
+
+    def test_put_invalid_task_missing_deadline(self):
+        task = {
+            'title':'Valid title',
+            'description': 'Valid description',
+            'startDate': None,
+            'inCharge': [],
+            'resources': '',
+            'status': False,
+        }
+
+        self.assert_put_invalid_task(task)
+
+    def test_put_invalid_task_missing_startDate(self):
+        task = {
+            'title':'Valid title',
+            'description': 'Valid description',
+            'deadline': None,
+            'inCharge': [],
+            'resources': '',
+            'status': False,
+        }
+
+        self.assert_put_invalid_task(task)
+
+    def test_put_invalid_task_missing_inCharge(self):
+        task = {
+            'title':'Valid title',
+            'description': 'Valid description',
+            'deadline': None,
+            'startDate': None,
+            'resources': '',
+            'status': False,
+        }
+
+        self.assert_put_invalid_task(task)
+
+    def test_put_invalid_task_missing_status(self):
+        task = {
+            'title':'Valid title',
+            'description': 'Valid description',
+            'deadline': None,
+            'startDate': None,
+            'inCharge': [],
+            'resources': '',
+        }
+
+        self.assert_put_invalid_task(task)
         
