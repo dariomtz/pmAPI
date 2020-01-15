@@ -27,7 +27,9 @@ class AssertHelper(TestCase):
             'description': 'Sample task description'
         }
 
-        response = self.client.post('/api/projects/' + self.valid_project_id() + '/', data=new_task, content_type='application/json')
+        projectId = self.valid_project_id()
+
+        response = self.client.post('/api/projects/' + projectId + '/', data=new_task, content_type='application/json')
 
         self.assertEquals(response.status_code, 200)
 
@@ -35,7 +37,10 @@ class AssertHelper(TestCase):
 
         self.assert_valid_task(task)
 
-        return task['id']
+        return {
+            'taskId': task['id'],
+            'projectId': projectId
+        }
     
     def assert_valid_datetime(self, datetime_string):
         if datetime_string == None:

@@ -146,6 +146,8 @@ def specific_project(request, projectId=None):
         return HttpResponseNotAllowed(['GET', 'POST', 'PUT', 'DELETE'])
 
 def specific_task(request, projectId=None, taskId=None):
+
+    #validate that the project and task both exist
     if not str(projectId) in projects or not str(taskId) in projects[str(projectId)]['tasks']:
         response = {
                 'kind': 'error',

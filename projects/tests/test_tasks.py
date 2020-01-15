@@ -3,7 +3,8 @@ from .task_testing_helper import TaskTestingHelper
 
 class TestTasks(TaskTestingHelper):
     def test_invalid_methods(self):
-        self.assert_invalid_methods('/api/projects/' + self.valid_project_id() + '/' + self.valid_task_id() + '/',
+        ids = self.valid_task_id()
+        self.assert_invalid_methods('/api/projects/' + ids['projectId'] + '/' + ids['taskId'] + '/',
         ['OPTIONS', 'HEAD', 'TRACE', 'PATCH', 'POST'])
 
     def test_get_not_found_task(self):
@@ -13,14 +14,15 @@ class TestTasks(TaskTestingHelper):
 
         self.assert_valid_error(response.json())
 
-        response = self.client.get('/api/projects/' + str(uuid.uuid4()) + '/' + self.valid_task_id()  + '/')
+        response = self.client.get('/api/projects/' + str(uuid.uuid4()) + '/' + self.valid_task_id()['taskId']  + '/')
 
         self.assertEquals(response.status_code, 404)
 
         self.assert_valid_error(response.json())
 
     def test_get_valid_task(self):
-        response = self.client.get('/api/projects/' + self.valid_project_id() + '/' + self.valid_task_id() + '/')
+        ids = self.valid_task_id()
+        response = self.client.get('/api/projects/' + ids['projectId'] + '/' + ids['taskId'] + '/')
 
         self.assertEquals(response.status_code, 200)
 
