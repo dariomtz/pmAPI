@@ -243,4 +243,13 @@ class TestTasks(TaskTestingHelper):
         }
 
         self.assert_put_invalid_task(task)
+    
+    def test_delete_valid_task(self):
+        ids = self.valid_task_id()
+        response = self.client.delete('/api/projects/' + ids['projectId'] + '/' + ids['taskId'] + '/')
+
+        self.assertEquals(response.status_code, 204)
         
+    def test_delete_invalid_task(self):
+        return
+
