@@ -20,3 +20,24 @@ class TaskTestingHelper(AssertHelper):
 
         self.assert_valid_error(error)
 
+    def assert_put_valid_task(self, task):
+        response = self.client.put('/api/projects/' + self.valid_project_id() + '/' + self.valid_task_id() + '/', data=task, content_type='application/json')
+        
+        self.assertEquals(response.status_code, 200)
+
+        put_task = response.json()
+
+        self.assert_valid_task(put_task)
+
+        return put_task
+    
+    def assert_put_invalid_task(self, task):
+        response = self.client.put('/api/projects/' + self.valid_project_id() + '/' + self.valid_task_id() + '/', data=task, content_type='application/json')
+        
+        self.assertEquals(response.status_code, 200)
+
+        error = response.json()
+
+        self.assert_valid_error(error)
+
+        return error
