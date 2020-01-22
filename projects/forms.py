@@ -1,25 +1,14 @@
-from django import forms
+from django.forms import ModelForm
+from .models import Project, Task
 
-class NewProject(forms.Form):
-    title = forms.CharField(max_length=100)
-    description = forms.CharField()
-    deadline = forms.DateTimeField(required=False) 
+class ProjectForm(ModelForm):
+    class Meta:
+        model = Project
+        fields = []
 
-class NewTask(forms.Form):
-    title = forms.CharField(max_length=100)
-    description = forms.CharField()
-    deadline = forms.DateTimeField(required=False)
-    startDate = forms.DateTimeField(required=False)
-    resources = forms.CharField(required=False)
+class TaskForm(ModelForm):
+    class Meta:
+        model = Task
+        fields = []
 
-class PutProject(forms.Form):
-    title = forms.CharField(max_length=100)
-    description = forms.CharField()
-    deadline = forms.DateTimeField()
-    status = forms.NullBooleanField()
-    
-    def clean_status(self):
-        data = self.cleaned_data['status']
-        if data == None:
-            raise forms.ValidationError('Enter a valid boolean value.', code='invalid')
-        return data
+

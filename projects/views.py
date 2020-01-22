@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse, HttpResponseBadRequest, HttpResponseNotAllowed, HttpResponseNotFound
 from django.views.decorators.csrf import csrf_exempt
-from .forms import NewProject, NewTask, PutProject
+from .forms import ProjectForm, TaskForm
 import json, datetime, uuid
 
 projects = {}
@@ -15,7 +15,7 @@ def all_projects(request):
     elif request.method == 'POST':#create a new project
 
         #validate input
-        project = NewProject(json.loads(request.body))
+        project = ProjectForm(json.loads(request.body))
         if not project.is_valid():
             response = {
                 'kind': 'error',
@@ -74,7 +74,7 @@ def specific_project(request, projectId=None):
     elif request.method == 'POST':#post a task to the project
         
         #validate input
-        task = NewTask(json.loads(request.body))
+        task = TaskForm(json.loads(request.body))
         if not task.is_valid():
             response = {
                 'kind': 'error',
@@ -107,7 +107,7 @@ def specific_project(request, projectId=None):
     elif request.method == 'PUT':#modify the entire project to these new values
         
         #validate input
-        project = PutProject(json.loads(request.body))
+        project = ProjectForm(json.loads(request.body))
         if not project.is_valid():
             response = {
                 'kind': 'error',
