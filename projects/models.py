@@ -13,6 +13,10 @@ class Project(models.Model):
     deadline = models.DateTimeField()
     status = models.BooleanField(default=False)
 
+    def __str__(self):
+        return self.title
+
+
 class Task(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -24,4 +28,7 @@ class Task(models.Model):
     #inCharge = models.ManyToManyField(Group, related_name='tasks')
     resources = models.TextField(blank=True)
     status = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.title
 
