@@ -1,16 +1,25 @@
-from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse, HttpResponseBadRequest, HttpResponseNotAllowed, HttpResponseNotFound
 from django.views.decorators.csrf import csrf_exempt
 from .forms import ProjectForm, TaskForm
+from .models import Project, Task
 import json, datetime, uuid
 
 projects = {}
+
+def str_date(date):
+    return str(date.replace(tzinfo=None))
+
+def json_query_set(QuerySet):
+    json = {}
+    for model in list(QuerySet.values()):
+        json[model['id']] = model
+    return json
 
 @csrf_exempt
 def all_projects(request):
 
     if request.method == 'GET':#get all projects
-        return JsonResponse({ 'projects': projects })
+        return JsonResponse({ 'projects': json_query_set(Project.objects.all()) })
 
     elif request.method == 'POST':#create a new project
 
