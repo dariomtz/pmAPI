@@ -7,30 +7,36 @@ import json, datetime, uuid
 projects = {}
 
 def str_date(date):
-    return str(date.replace(tzinfo=None))
+    return str(date.replace(tzinfo=None, ))
 
-def json_query_set(QuerySet):
-    json = {}
-    for model in list(QuerySet.values()):
-        model['deadline'] = str_date(model['deadline'])
-        model['created'] = str_date(model['created'])
-        model['updated'] = str_date(model['updated'])
-        json[model['id']] = model
-    return json
+def list_ids_query_set(QuerySet):
+    return [model.id for model in QuerySet]
 
-def list_query_set(QuerySet):
-    query_list =list(QuerySet.values())
-    for model in query_list:
-        model['deadline'] = str_date(model['deadline'])
-        model['created'] = str_date(model['created'])
-        model['updated'] = str_date(model['updated'])
-    return query_list
+def project_model_to_json(project):
+    return {
+        'kind': 'project',
+        'id': project.id,
+        'title': project.title, 
+        'description': project.description,
+        'created': str_date(project.created),
+        'updated': str_date(project.updated),
+        'tasks': list_ids_query_set(project.tasks.all()),
+        'deadline': str_date(project.deadline),
+        'status': project.status,
+    }
+
+def project_list_query_set(QuerySet):
+    return [project_model_to_json(model) for model in QuerySet]
 
 @csrf_exempt
 def all_projects(request):
 
     if request.method == 'GET':#get all projects
-        return JsonResponse({ 'projects': list_query_set(Project.objects.all()) })
+        response = { 
+            'kind': 'projects',
+            'projects': project_list_query_set(Project.objects.all()) 
+        }
+        return JsonResponse(response)
 
     elif request.method == 'POST':#create a new project
 
@@ -44,19 +50,17 @@ def all_projects(request):
             return HttpResponseBadRequest(json.dumps(response), content_type='application/json')
         
         #creation of new object
-        body = project.cleaned_data
+        model = Project(**project.cleaned_data)
+        
         id = str(uuid.uuid4())
         new_project = {
             'kind': 'project',
-            'id': id,
-            'title': body['title'], 
-            'description': body['description'],
-            'created': str(datetime.datetime.now()),
-            'updated': str(datetime.datetime.now()),
-            'canRead':[],
-            'canEdit':[],
-            'admins':[],
-            'tasks': {},
+            'id': model.id,
+            'title': model.title, 
+            'description': model.description,
+            'created': str_date(model.created),
+            'updated': str_date(model.updated),
+            'tasks': model.tasks,
             'deadline': str(body['deadline'].replace(tzinfo=None)) if 'deadline' in body and body['deadline'] != None else None,
             'status': 0,
         }
