@@ -7,7 +7,6 @@ class ProjectForm(ModelForm):
         fields = [
             'title',
             'description',
-            'tasks',
             'deadline',
             'status',
         ]

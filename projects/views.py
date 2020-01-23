@@ -7,12 +7,28 @@ import json, datetime, uuid
 projects = {}
 
 def str_date(date):
-    return str(date.replace(tzinfo=None, ))
+    return str(date.replace(tzinfo=None, microsecond=0))
 
 def list_ids_query_set(QuerySet):
     return [model.id for model in QuerySet]
 
-def project_model_to_json(project):
+def task_model_to_json(task):
+    return {
+        'kind': 'task',
+        'id': task.id,
+        'title': task.title, 
+        'description': task.description,
+        'created': str_date(task.created),
+        'updated': str_date(task.updated),
+        'deadline': str_date(task.deadline),
+        'resources': task.resources,
+        'status': task.status,
+    }
+
+def task_list_query_set(QuerySet):
+    return [task_model_to_json(model) for model in QuerySet]
+
+def project_model_to_json(project, complete_tasks=False):
     return {
         'kind': 'project',
         'id': project.id,
@@ -20,7 +36,7 @@ def project_model_to_json(project):
         'description': project.description,
         'created': str_date(project.created),
         'updated': str_date(project.updated),
-        'tasks': list_ids_query_set(project.tasks.all()),
+        'tasks': task_list_query_set(project.tasks.all()) if complete_tasks else list_ids_query_set(project.tasks.all()),
         'deadline': str_date(project.deadline),
         'status': project.status,
     }
@@ -52,23 +68,10 @@ def all_projects(request):
         #creation of new object
         model = Project(**project.cleaned_data)
         
-        id = str(uuid.uuid4())
-        new_project = {
-            'kind': 'project',
-            'id': model.id,
-            'title': model.title, 
-            'description': model.description,
-            'created': str_date(model.created),
-            'updated': str_date(model.updated),
-            'tasks': model.tasks,
-            'deadline': str(body['deadline'].replace(tzinfo=None)) if 'deadline' in body and body['deadline'] != None else None,
-            'status': 0,
-        }
-
         #Save changes in database
-        projects[id] = new_project
+        model.save()
 
-        return JsonResponse(new_project)
+        return JsonResponse(project_model_to_json(model))
     
     else:
         return HttpResponseNotAllowed(['GET', 'POST'])
