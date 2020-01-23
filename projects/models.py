@@ -24,7 +24,6 @@ class Task(models.Model):
     description = models.TextField(blank=True)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     deadline = models.DateTimeField()
-    startDate = models.DateTimeField()
     #inCharge = models.ManyToManyField(Group, related_name='tasks')
     resources = models.TextField(blank=True)
     status = models.BooleanField(default=False)

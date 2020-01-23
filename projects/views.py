@@ -12,14 +12,25 @@ def str_date(date):
 def json_query_set(QuerySet):
     json = {}
     for model in list(QuerySet.values()):
+        model['deadline'] = str_date(model['deadline'])
+        model['created'] = str_date(model['created'])
+        model['updated'] = str_date(model['updated'])
         json[model['id']] = model
     return json
+
+def list_query_set(QuerySet):
+    query_list =list(QuerySet.values())
+    for model in query_list:
+        model['deadline'] = str_date(model['deadline'])
+        model['created'] = str_date(model['created'])
+        model['updated'] = str_date(model['updated'])
+    return query_list
 
 @csrf_exempt
 def all_projects(request):
 
     if request.method == 'GET':#get all projects
-        return JsonResponse({ 'projects': json_query_set(Project.objects.all()) })
+        return JsonResponse({ 'projects': list_query_set(Project.objects.all()) })
 
     elif request.method == 'POST':#create a new project
 

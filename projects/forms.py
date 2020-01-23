@@ -20,7 +20,6 @@ class TaskForm(ModelForm):
             'description',
             'project',
             'deadline',
-            'startDate',
             'resources',
             'status',
         ]
