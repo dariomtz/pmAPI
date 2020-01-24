@@ -124,11 +124,11 @@ def specific_project(request, projectId=None):
         elif request.method == 'PUT':#modify the entire project to these new values
             
             #validate input
-            projectInput = ProjectForm(json.loads(request.body), instance=project)
-            if not projectInput.is_valid():
+            project_input = ProjectForm(json.loads(request.body), instance=project)
+            if not project_input.is_valid():
                 response = {
                     'kind': 'error',
-                    'errors': json.loads(projectInput.errors.as_json())
+                    'errors': json.loads(project_input.errors.as_json())
                 }
                 return HttpResponseBadRequest(json.dumps(response), content_type='application/json')
             
