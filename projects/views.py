@@ -147,7 +147,11 @@ def specific_project(request, projectId=None):
 def specific_task(request, projectId=None, taskId=None):
 
     #validate that the project and task both exist
-    if not str(projectId) in projects or not str(taskId) in projects[str(projectId)]['tasks']:
+    #the task must correspond with the project
+    try:
+        project = Project.objects.get(id=projectId)
+        task = project.tasks.get(id=taskId)
+    except:
         response = {
                 'kind': 'error',
                 'errors': {
@@ -161,9 +165,10 @@ def specific_task(request, projectId=None, taskId=None):
                 }
             }
         return HttpResponseNotFound(json.dumps(response) , content_type='application/json')
+    else:
 
-    if request.method == 'GET': 
-        return JsonResponse(projects[str(projectId)]['tasks'][str(taskId)])
+        if request.method == 'GET': 
+            return JsonResponse(task_model_to_json(task))
 
-    if True:
-        return HttpResponseNotAllowed(['GET', 'PUT', 'DELETE'])
+        else:
+            return HttpResponseNotAllowed(['GET', 'PUT', 'DELETE'])
