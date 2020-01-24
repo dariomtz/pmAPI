@@ -14,7 +14,7 @@ class TestTasks(TaskTestingHelper):
 
         self.assert_valid_error(response.json())
 
-        response = self.client.get('/api/projects/' + str(uuid.uuid4()) + '/' + self.valid_task_id()['taskId']  + '/')
+        response = self.client.get('/api/projects/' + 999 + '/' + self.valid_task_id()['taskId']  + '/')
 
         self.assertEquals(response.status_code, 404)
 
@@ -29,27 +29,19 @@ class TestTasks(TaskTestingHelper):
         self.assert_valid_task(response.json())
 
     def test_get_invalid_task(self):
+        #this is only invalid when the user does not have permisión tu read the task
         return
 
-    def test_post_valid_task_complete(self):    
+    def test_post_valid_task(self):    
         new_task = {
             'title': 'This is a sample title for a task',
             'description': 'This is a sample description for a task',
             'resources': 'Sample resources',
             'deadline': str(datetime.datetime.now()),
-            'startDate': str(datetime.datetime.today())
         }
 
         self.assert_post_valid_task(new_task)
     
-    def test_post_valid_task_without_optional_params(self):
-        new_task = {
-            'title': 'This is a sample title for a task',
-            'description': 'This is a sample description for a task'
-        }
-
-        self.assert_post_valid_task(new_task)
-
     def test_post_invalid_task_bad_title(self):
         new_task = {
             'title': 'This is a sample title for a task long enough to cause an error. This is a sample title for a task long enough to cause an error. This is a sample title for a task long enough to cause an error.',
@@ -81,22 +73,11 @@ class TestTasks(TaskTestingHelper):
         
         self.assert_post_invalid_task(new_task)
 
-    def test_post_invalid_task_bad_startDate(self):
-        new_task = {
-            'title': 'Valid title',
-            'description': 'Valid description',
-            'startDate': 'Not a date'
-        }
-
-        self.assert_post_invalid_task(new_task)
-
-    def test_put_valid_task_status_true(self):
+    def test_put_valid_task_status(self):
         task = {
             'title':'Valid title',
             'description': 'Valid description',
-            'deadline': None,
-            'startDate': None,
-            'inCharge': [],
+            'deadline': '2020-01-22 19:36:50',
             'resources': '',
             'status': True,
         }
@@ -105,29 +86,12 @@ class TestTasks(TaskTestingHelper):
 
         self.assertTrue(response['status'])
 
-    def test_put_valid_task_status_false(self):
-        task = {
-            'title':'Valid title',
-            'description': 'Valid description',
-            'deadline': None,
-            'startDate': None,
-            'inCharge': [],
-            'resources': '',
-            'status': False,
-        }
-
-        response = self.assert_put_valid_task(task)
-
-        self.assertFalse(response['status'])
-
     def test_put_invalid_task_bad_title(self):
         task = {
             'title':'Very long invalid title. Very long invalid title. Very long invalid title. Very long invalid title. Very long invalid title. ',
             'description': 'Valid description',
-            'deadline': None,
-            'startDate': None,
+            'deadline': '2020-01-22 19:36:50',
             'resources': '',
-            'inCharge': [],
             'status': False,
         }
 
@@ -138,21 +102,6 @@ class TestTasks(TaskTestingHelper):
             'title':'Valid title',
             'description': 'Valid description',
             'deadline': 'Not a date',
-            'startDate': None,
-            'inCharge': [],
-            'resources': '',
-            'status': False,
-        }
-
-        self.assert_put_invalid_task(task)
-
-    def test_put_invalid_task_bad_startDate(self):
-        task = {
-            'title':'Valid title',
-            'description': 'Valid description',
-            'deadline': None,
-            'startDate': 'Not a date',
-            'inCharge': [],
             'resources': '',
             'status': False,
         }
@@ -163,9 +112,7 @@ class TestTasks(TaskTestingHelper):
         task = {
             'title':'Valid title',
             'description': 'Valid description',
-            'deadline': None,
-            'startDate': None,
-            'inCharge': [],
+            'deadline': '2020-01-22 19:36:50',
             'resources': '',
             'status': None,
         }
@@ -175,9 +122,7 @@ class TestTasks(TaskTestingHelper):
     def test_put_invalid_task_missing_title(self):
         task = {
             'description': 'Valid description',
-            'deadline': None,
-            'startDate': None,
-            'inCharge': [],
+            'deadline': '2020-01-22 19:36:50',
             'resources': '',
             'status': False,
         }
@@ -187,9 +132,7 @@ class TestTasks(TaskTestingHelper):
     def test_put_invalid_task_missing_description(self):
         task = {
             'title':'Valid title',
-            'deadline': None,
-            'startDate': None,
-            'inCharge': [],
+            'deadline': '2020-01-22 19:36:50',
             'resources': '',
             'status': False,
         }
@@ -200,50 +143,12 @@ class TestTasks(TaskTestingHelper):
         task = {
             'title':'Valid title',
             'description': 'Valid description',
-            'startDate': None,
-            'inCharge': [],
             'resources': '',
             'status': False,
         }
 
         self.assert_put_invalid_task(task)
 
-    def test_put_invalid_task_missing_startDate(self):
-        task = {
-            'title':'Valid title',
-            'description': 'Valid description',
-            'deadline': None,
-            'inCharge': [],
-            'resources': '',
-            'status': False,
-        }
-
-        self.assert_put_invalid_task(task)
-
-    def test_put_invalid_task_missing_inCharge(self):
-        task = {
-            'title':'Valid title',
-            'description': 'Valid description',
-            'deadline': None,
-            'startDate': None,
-            'resources': '',
-            'status': False,
-        }
-
-        self.assert_put_invalid_task(task)
-
-    def test_put_invalid_task_missing_status(self):
-        task = {
-            'title':'Valid title',
-            'description': 'Valid description',
-            'deadline': None,
-            'startDate': None,
-            'inCharge': [],
-            'resources': '',
-        }
-
-        self.assert_put_invalid_task(task)
-    
     def test_delete_valid_task(self):
         ids = self.valid_task_id()
         response = self.client.delete('/api/projects/' + ids['projectId'] + '/' + ids['taskId'] + '/')
