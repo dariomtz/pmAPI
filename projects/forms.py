@@ -17,7 +17,6 @@ class TaskForm(ModelForm):
         fields = [
             'title',
             'description',
-            'project',
             'deadline',
             'resources',
             'status',

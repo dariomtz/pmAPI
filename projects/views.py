@@ -20,6 +20,7 @@ def task_model_to_json(task):
         'description': task.description,
         'created': str_date(task.created),
         'updated': str_date(task.updated),
+        'project': task.project.id,
         'deadline': str_date(task.deadline),
         'resources': task.resources,
         'status': task.status,
@@ -80,7 +81,9 @@ def all_projects(request):
 def specific_project(request, projectId=None):
 
     #Validate that the project exists
-    if not str(projectId) in projects:
+    try:
+        project = Project.objects.get(id=projectId)
+    except:
         response = {
                 'kind': 'error',
                 'errors': {
@@ -94,83 +97,70 @@ def specific_project(request, projectId=None):
                 }
             }
         return HttpResponseNotFound(json.dumps(response) , content_type='application/json')
-
-    if request.method == 'GET':#gets the specific project
-        return JsonResponse(projects[str(projectId)])
-        
-    elif request.method == 'POST':#post a task to the project
-        
-        #validate input
-        task = TaskForm(json.loads(request.body))
-        if not task.is_valid():
-            response = {
-                'kind': 'error',
-                'errors': json.loads(task.errors.as_json())
-            }
-            return HttpResponseBadRequest(json.dumps(response) , content_type='application/json')
-
-        #creation of new object
-        body = task.cleaned_data
-        id = str(uuid.uuid4())
-        new_task = {
-            'kind': 'task',
-            'id': id,
-            'title': body['title'], 
-            'description': body['description'],
-            'created': str(datetime.datetime.now()),
-            'updated': str(datetime.datetime.now()),
-            'deadline': str(body['deadline'].replace(tzinfo=None)) if 'deadline' in body and body['deadline'] != None else None,
-            'startDate': str(body['startDate'].replace(tzinfo=None)) if 'startDate' in body and body['startDate'] != None else None,
-            'inCharge':[],
-            'resources': body['resources'] if 'resources' in body else None,
-            'status': 0,
-        } 
-
-        #Save changes in database
-        projects[str(projectId)]['tasks'][id] = new_task
-
-        return JsonResponse(new_task)
-
-    elif request.method == 'PUT':#modify the entire project to these new values
-        
-        #validate input
-        project = ProjectForm(json.loads(request.body))
-        if not project.is_valid():
-            response = {
-                'kind': 'error',
-                'errors': json.loads(project.errors.as_json())
-            }
-            return HttpResponseBadRequest(json.dumps(response), content_type='application/json')
-
-        #creation of new object
-        body = project.cleaned_data
-        id = str(projectId)
-        modified_project = {
-            'kind': 'project',
-            'id': id,
-            'title': body['title'], 
-            'description': body['description'],
-            'created': projects[id]['created'],
-            'updated': str(datetime.datetime.now()),
-            'canRead': [],
-            'canEdit': [],
-            'admins': [],
-            'tasks': projects[id]['tasks'],
-            'deadline': str(body['deadline'].replace(tzinfo=None)),
-            'status': body['status'],
-        }
-
-        #save changes in database
-        projects[id] = modified_project
-
-        return JsonResponse(modified_project)
-
-    elif request.method == 'DELETE':#deletes the project
-        del projects[str(projectId)]
-        return HttpResponse(status=204)
-
     else:
-        return HttpResponseNotAllowed(['GET', 'POST', 'PUT', 'DELETE'])
+        if  request.method == 'GET':#gets the specific project
+            return JsonResponse(project_model_to_json(project, complete_tasks=True))
+            
+        elif request.method == 'POST':#post a task to the project
+            
+            #validate input
+            task = TaskForm(json.loads(request.body))
+            if not task.is_valid():
+                response = {
+                    'kind': 'error',
+                    'errors': json.loads(task.errors.as_json())
+                }
+                return HttpResponseBadRequest(json.dumps(response) , content_type='application/json')
+
+            #creation of new object
+            model = Task(project=project, **task.cleaned_data)
+            
+            #Save changes in database
+            model.save()
+            project.tasks.add(model)
+
+            return JsonResponse(task_model_to_json(model))
+
+        elif request.method == 'PUT':#modify the entire project to these new values
+            
+            #validate input
+            project = ProjectForm(json.loads(request.body))
+            if not project.is_valid():
+                response = {
+                    'kind': 'error',
+                    'errors': json.loads(project.errors.as_json())
+                }
+                return HttpResponseBadRequest(json.dumps(response), content_type='application/json')
+
+            #creation of new object
+            body = project.cleaned_data
+            id = str(projectId)
+            modified_project = {
+                'kind': 'project',
+                'id': id,
+                'title': body['title'], 
+                'description': body['description'],
+                'created': projects[id]['created'],
+                'updated': str(datetime.datetime.now()),
+                'canRead': [],
+                'canEdit': [],
+                'admins': [],
+                'tasks': projects[id]['tasks'],
+                'deadline': str(body['deadline'].replace(tzinfo=None)),
+                'status': body['status'],
+            }
+
+            #save changes in database
+            projects[id] = modified_project
+
+            return JsonResponse(modified_project)
+
+        elif request.method == 'DELETE':#deletes the project
+            del projects[str(projectId)]
+            return HttpResponse(status=204)
+
+        else:
+            return HttpResponseNotAllowed(['GET', 'POST', 'PUT', 'DELETE'])
 
 def specific_task(request, projectId=None, taskId=None):
 
