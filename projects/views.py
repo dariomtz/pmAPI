@@ -124,36 +124,18 @@ def specific_project(request, projectId=None):
         elif request.method == 'PUT':#modify the entire project to these new values
             
             #validate input
-            project = ProjectForm(json.loads(request.body))
-            if not project.is_valid():
+            projectInput = ProjectForm(json.loads(request.body), instance=project)
+            if not projectInput.is_valid():
                 response = {
                     'kind': 'error',
-                    'errors': json.loads(project.errors.as_json())
+                    'errors': json.loads(projectInput.errors.as_json())
                 }
                 return HttpResponseBadRequest(json.dumps(response), content_type='application/json')
+            
+            #Save changes in database
+            project.save()
 
-            #creation of new object
-            body = project.cleaned_data
-            id = str(projectId)
-            modified_project = {
-                'kind': 'project',
-                'id': id,
-                'title': body['title'], 
-                'description': body['description'],
-                'created': projects[id]['created'],
-                'updated': str(datetime.datetime.now()),
-                'canRead': [],
-                'canEdit': [],
-                'admins': [],
-                'tasks': projects[id]['tasks'],
-                'deadline': str(body['deadline'].replace(tzinfo=None)),
-                'status': body['status'],
-            }
-
-            #save changes in database
-            projects[id] = modified_project
-
-            return JsonResponse(modified_project)
+            return JsonResponse(project_model_to_json(project))
 
         elif request.method == 'DELETE':#deletes the project
             del projects[str(projectId)]
