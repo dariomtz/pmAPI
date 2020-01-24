@@ -183,7 +183,7 @@ def specific_task(request, projectId=None, taskId=None):
             #Save changes in database
             task.save()
 
-            return JsonResponse(project_model_to_json(task))
+            return JsonResponse(task_model_to_json(task))
 
         elif request.method == 'DELETE':
             task.delete()
