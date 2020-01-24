@@ -94,17 +94,6 @@ class TestTasks(TaskTestingHelper):
 
         self.assert_put_invalid_task(task)
 
-    def test_put_invalid_task_status(self):
-        task = {
-            'title':'Valid title',
-            'description': 'Valid description',
-            'deadline': '2020-01-22 19:36:50',
-            'resources': '',
-            'status': None,
-        }
-
-        self.assert_put_invalid_task(task)
-
     def test_put_invalid_task_missing_deadline(self):
         task = {
             'title':'Valid title',
