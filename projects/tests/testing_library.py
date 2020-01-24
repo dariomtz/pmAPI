@@ -20,7 +20,7 @@ class AssertHelper(TestCase):
 
         self.assert_valid_project(project)
 
-        return project['id']
+        return str(project['id'])
 
     def valid_task_id(self):
         new_task = {
@@ -29,7 +29,7 @@ class AssertHelper(TestCase):
             'deadline': '2020-01-22 19:36:50'
         }
 
-        projectId = self.valid_project_id()
+        projectId = str(self.valid_project_id())
 
         response = self.client.post('/api/projects/' + projectId + '/', data=new_task, content_type='application/json')
 
@@ -40,7 +40,7 @@ class AssertHelper(TestCase):
         self.assert_valid_task(task)
 
         return {
-            'taskId': task['id'],
+            'taskId': str(task['id']),
             'projectId': projectId
         }
     
