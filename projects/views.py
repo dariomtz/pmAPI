@@ -1,10 +1,10 @@
+import json, datetime
+
 from django.http import JsonResponse, HttpResponse, HttpResponseBadRequest, HttpResponseNotAllowed, HttpResponseNotFound
 from django.views.decorators.csrf import csrf_exempt
+
 from .forms import ProjectForm, TaskForm
 from .models import Project, Task
-import json, datetime, uuid
-
-projects = {}
 
 def str_date(date):
     return str(date.replace(tzinfo=None, microsecond=0))
