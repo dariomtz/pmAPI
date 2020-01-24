@@ -8,7 +8,8 @@ class AssertHelper(TestCase):
     def valid_project_id(self):
         new_project = {
             'title': 'This is a sample title',
-            'description' : 'This is a sample description'
+            'description' : 'This is a sample description',
+            'deadline': '2020-01-22 19:36:50'
         }
 
         response = self.client.post('/api/projects/', data=new_project, content_type='application/json')
@@ -24,7 +25,8 @@ class AssertHelper(TestCase):
     def valid_task_id(self):
         new_task = {
             'title': 'Sample task title.',
-            'description': 'Sample task description'
+            'description': 'Sample task description',
+            'deadline': '2020-01-22 19:36:50'
         }
 
         projectId = self.valid_project_id()
@@ -45,7 +47,7 @@ class AssertHelper(TestCase):
     def assert_valid_datetime(self, datetime_string):
         if datetime_string == None:
             return
-        format_string =  '%Y-%m-%d %H:%M:%S.%f'
+        format_string =  '%Y-%m-%d %H:%M:%S'
         try :
             datetime.datetime.strptime(datetime_string, format_string)
         except ValueError:
@@ -65,12 +67,8 @@ class AssertHelper(TestCase):
         self.assert_valid_datetime(task['created'])
         self.assertIn('updated', task)
         self.assert_valid_datetime(task['updated'])
-        self.assertIn('inCharge', task)
-        self.assertIsNotNone(task['inCharge'])
         self.assertIn('deadline', task)
         self.assert_valid_datetime(task['deadline'])
-        self.assertIn('startDate', task)
-        self.assert_valid_datetime(task['startDate'])
         self.assertIn('resources', task)
         self.assertIsNotNone(task['resources'])
         self.assertIn('status', task)
@@ -90,12 +88,6 @@ class AssertHelper(TestCase):
         self.assert_valid_datetime(project['created'])
         self.assertIn('updated', project)
         self.assert_valid_datetime(project['updated'])
-        self.assertIn('canRead', project)
-        self.assertIsNotNone(project['canRead'])
-        self.assertIn('canEdit', project)
-        self.assertIsNotNone(project['canEdit'])
-        self.assertIn('admins', project)
-        self.assertIsNotNone(project['admins'])
         self.assertIn('deadline', project)
         self.assert_valid_datetime(project['deadline'])
         self.assertIn('status', project)
@@ -103,9 +95,6 @@ class AssertHelper(TestCase):
 
         self.assertIn('tasks', project)
         self.assertIsNotNone(project['tasks'])
-        
-        for k in project['tasks']:
-            self.assert_valid_task(project['tasks'][k])
         
     def assert_valid_error(self, error):
         self.assertIn('kind', error)
