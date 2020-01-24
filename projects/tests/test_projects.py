@@ -7,7 +7,7 @@ class TestProjects(ProjectTestingHelper):
         self.assert_invalid_methods('/api/projects/' +  self.valid_project_id() + '/', ['OPTIONS', 'HEAD', 'TRACE', 'PATCH'])
 
     def test_not_found_project(self):
-        response = self.client.get('/api/projects/' + str(uuid.uuid4()) + '/')
+        response = self.client.get('/api/projects/' + 9999 + '/')
 
         self.assertEquals(response.status_code, 404)
 
@@ -22,47 +22,29 @@ class TestProjects(ProjectTestingHelper):
         all_projects = response.json()
 
         self.assertIn('projects', all_projects)
+        self.assertIn('kind', all_projects)
+        self.assertEquals(all_projects['kind'], 'projects')
 
-        projects = all_projects['projects']
-        for key in projects:
-            project = projects[key]
+        for project in all_projects['projects']:
             self.assert_valid_project(project)
-
-    def test_get_invalid_projects(self):
-        
-        return
     
     def test_get_valid_project(self):
-        all_projects_request = self.client.get('/api/projects/')
-        all_projects_dict = all_projects_request.json()['projects']
-
-        self.assertEquals(all_projects_request.status_code, 200)
-
-        for key in all_projects_dict:
-            response = self.client.get('/api/projects/' + key + '/')
-            self.assertEquals(response.status_code, 200)
-            self.assert_valid_project(response.json())
+        response = self.client.get('/api/projects/' + self.valid_project_id() + '/')
+        self.assertEquals(response.status_code, 200)
+        self.assert_valid_project(response.json())
 
     def test_get_invalid_project(self):
-        
+        #try to access a project that does not belong to you
         return
 
-    def test_post_valid_project_complete(self):
+    def test_post_valid_project(self):
         new_project = {
             'title':'This is a sample title.',
             'description': 'This is a sample description.',
             'deadline': str(datetime.datetime.today())
         }
 
-        self.assert_post_valid_project(new_project)
-    
-    def test_post_valid_project_missing_deadline(self):
-        new_project = {
-            'title':'This is a sample title.',
-            'description': 'This is a sample description.'
-        }
-
-        self.assert_post_valid_project(new_project)    
+        self.assert_post_valid_project(new_project) 
 
     def test_post_invalid_project_invalid_title(self): 
         new_project = {
@@ -96,19 +78,7 @@ class TestProjects(ProjectTestingHelper):
         
         self.assert_post_invalid_project(new_project)
 
-    def test_put_valid_project_status_true(self):
-        new_project = {
-            'title': 'A changed salmple title.',
-            'description': 'A changed sample description.', 
-            'deadline': str(datetime.datetime.now()),
-            'status': True
-        }
-
-        response = self.assert_put_valid_project(new_project)
-
-        self.assertEquals(response['status'], True)
-
-    def test_put_valid_project_status_false(self):
+    def test_put_valid_project(self):
         new_project = {
             'title': 'A changed salmple title.',
             'description': 'A changed sample description.', 
@@ -195,6 +165,7 @@ class TestProjects(ProjectTestingHelper):
         self.assertEquals(response.status_code, 204)
     
     def test_delete_invalid_project(self):
+        #delete a project that does not belong to you
         return
     
 
