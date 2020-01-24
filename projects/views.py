@@ -138,7 +138,7 @@ def specific_project(request, projectId=None):
             return JsonResponse(project_model_to_json(project))
 
         elif request.method == 'DELETE':#deletes the project
-            del projects[str(projectId)]
+            project.delete()
             return HttpResponse(status=204)
 
         else:
