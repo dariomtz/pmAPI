@@ -110,51 +110,11 @@ class TestProjects(ProjectTestingHelper):
 
         self.assert_put_invalid_project(new_project)
 
-    def test_put_invalid_project_invalid_status(self):
-        new_project = {
-            'title': 'A valid title',
-            'description': 'A valid description',
-            'deadline': str(datetime.datetime.now()),
-            'status': 'Not a boolean lol'
-        }
-
-        response = self.assert_put_invalid_project(new_project)
-
-        self.assertEquals(response['errors']['status'][0]['message'], 'Enter a valid boolean value.')
-        self.assertEquals(response['errors']['status'][0]['code'], 'invalid')
-
-    def test_put_invalid_project_missing_title(self):
-        new_project = {
-            'description': 'A changed sample description.', 
-            'deadline': str(datetime.datetime.now()),
-            'status': False
-        }
-
-        self.assert_put_invalid_project(new_project)
-
-    def test_put_invalid_project_missing_description(self):
-        new_project = {
-            'title': 'A changed salmple title.',
-            'deadline': str(datetime.datetime.now()),
-            'status': False
-        }
-
-        self.assert_put_invalid_project(new_project)
-
     def test_put_invalid_project_missing_deadline(self):
         new_project = {
             'title': 'A valid title',
             'description': 'A valid description',
             'status': False
-        }
-
-        self.assert_put_invalid_project(new_project)
-
-    def test_put_invalid_project_missing_status(self):
-        new_project = {
-            'title': 'A valid title',
-            'description': 'A valid description',
-            'deadline': str(datetime.datetime.now()),
         }
 
         self.assert_put_invalid_project(new_project)

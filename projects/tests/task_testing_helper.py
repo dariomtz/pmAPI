@@ -36,7 +36,7 @@ class TaskTestingHelper(AssertHelper):
         ids = self.valid_task_id()
         response = self.client.put('/api/projects/' + ids['projectId'] + '/' + ids['taskId'] + '/', data=task, content_type='application/json')
         
-        self.assertEquals(response.status_code, 200)
+        self.assertEquals(response.status_code, 400)
 
         error = response.json()
 

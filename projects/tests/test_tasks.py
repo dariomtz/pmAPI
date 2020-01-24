@@ -50,20 +50,6 @@ class TestTasks(TaskTestingHelper):
 
         self.assert_post_invalid_task(new_task)
 
-    def test_post_invalid_task_missing_title(self):
-        new_task = {
-            'description': 'This is a sample description for a task',
-        }
-
-        self.assert_post_invalid_task(new_task)
-
-    def test_post_invalid_task_missing_description(self):
-        new_task = {
-            'title': 'Valid title'
-        }
-
-        self.assert_post_invalid_task(new_task)
-    
     def test_post_invalid_task_bad_deadline(self):
         new_task = {
             'title': 'Valid title',
@@ -115,26 +101,6 @@ class TestTasks(TaskTestingHelper):
             'deadline': '2020-01-22 19:36:50',
             'resources': '',
             'status': None,
-        }
-
-        self.assert_put_invalid_task(task)
-
-    def test_put_invalid_task_missing_title(self):
-        task = {
-            'description': 'Valid description',
-            'deadline': '2020-01-22 19:36:50',
-            'resources': '',
-            'status': False,
-        }
-
-        self.assert_put_invalid_task(task)
-
-    def test_put_invalid_task_missing_description(self):
-        task = {
-            'title':'Valid title',
-            'deadline': '2020-01-22 19:36:50',
-            'resources': '',
-            'status': False,
         }
 
         self.assert_put_invalid_task(task)
