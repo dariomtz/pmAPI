@@ -8,13 +8,13 @@ class TestTasks(TaskTestingHelper):
         ['OPTIONS', 'HEAD', 'TRACE', 'PATCH', 'POST'])
 
     def test_get_not_found_task(self):
-        response = self.client.get('/api/projects/' + self.valid_project_id() + '/' + str(uuid.uuid4()) + '/')
+        response = self.client.get('/api/projects/' + self.valid_project_id() + '/' + '999' + '/')
         
         self.assertEquals(response.status_code, 404)
 
         self.assert_valid_error(response.json())
 
-        response = self.client.get('/api/projects/' + 999 + '/' + self.valid_task_id()['taskId']  + '/')
+        response = self.client.get('/api/projects/' + '999' + '/' + self.valid_task_id()['taskId']  + '/')
 
         self.assertEquals(response.status_code, 404)
 

@@ -7,7 +7,7 @@ class TestProjects(ProjectTestingHelper):
         self.assert_invalid_methods('/api/projects/' +  self.valid_project_id() + '/', ['OPTIONS', 'HEAD', 'TRACE', 'PATCH'])
 
     def test_not_found_project(self):
-        response = self.client.get('/api/projects/' + 9999 + '/')
+        response = self.client.get('/api/projects/' + '9999' + '/')
 
         self.assertEquals(response.status_code, 404)
 
