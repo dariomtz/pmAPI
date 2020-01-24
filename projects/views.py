@@ -170,5 +170,20 @@ def specific_task(request, projectId=None, taskId=None):
         if request.method == 'GET': 
             return JsonResponse(task_model_to_json(task))
 
+        elif request.method == 'PUT':
+            #validate input
+            task_input = TaskForm(json.loads(request.body), instance=task)
+            if not task_input.is_valid():
+                response = {
+                    'kind': 'error',
+                    'errors': json.loads(task_input.errors.as_json())
+                }
+                return HttpResponseBadRequest(json.dumps(response), content_type='application/json')
+            
+            #Save changes in database
+            task.save()
+
+            return JsonResponse(project_model_to_json(task))
+
         else:
             return HttpResponseNotAllowed(['GET', 'PUT', 'DELETE'])
