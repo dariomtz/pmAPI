@@ -185,5 +185,9 @@ def specific_task(request, projectId=None, taskId=None):
 
             return JsonResponse(project_model_to_json(task))
 
+        elif request.method == 'DELETE':
+            task.delete()
+            return HttpResponse(status=204)
+
         else:
             return HttpResponseNotAllowed(['GET', 'PUT', 'DELETE'])
