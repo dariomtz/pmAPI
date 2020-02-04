@@ -9,7 +9,7 @@ class UserRegistration(forms.ModelForm):
     def clean_email(self):
         email = self.cleaned_data.get('email')
         if User.objects.filter(email=email).exists():
-            raise forms.ValidationError("That email is already being used for a different user", code='repeated')
+            raise forms.ValidationError("That email is already being used for a different user.", code='unique')
         return self.cleaned_data
 
     class Meta:
@@ -21,3 +21,8 @@ class UserRegistration(forms.ModelForm):
             'email',
             'password'
         ]
+
+class UserLogin(forms.Form):
+    username = forms.CharField(required=True)
+    password = forms.CharField(required=True)
+    
