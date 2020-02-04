@@ -1,119 +1,68 @@
-@import url("https://fonts.googleapis.com/css?family=Montserrat:400,600&display=swap");
+@import url('https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600&display=swap');
 
-html{
-    overflow-y: hidden;
+html *{
+    margin: 0px;
+    padding: 0px;
+    font-size: 16px;
+    font-family: 'Montserrat', sans-serif;
 }
 
 body{
-    
-
-    padding: 0;
-
-    background-color: #89BDBB;
-
-    color: white;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 16px;
+    background-color: #F8F8F8;
 }
 
+header{
+    height: minmax(50px, 30%);
+    background-color: #23374D;
+}
+
+header h2{
+    font-weight: 600;
+    padding: .2em 2em;
+    text-align: center;
+    font-size: 3em;
+    color: white;
+}
 
 main{
-    width: 75%;
-    margin: 15em auto 1em auto;
-
-    text-align: center;
-    
-}
-
-h1{ 
-    font-size: 5em;
-
-    padding: 0em 0 .1em 0;
-}
-
-p{  
-    font-size: 3em;
-    padding: 0em 0em 1em 0em;
-}
-
-ul{
-    list-style-type: none;
-    padding: 0;
-    
     display: grid;
+    grid-template-areas: "filler1 main filler2";
 }
 
-
-li{
-    padding: 2em;
+.main{
+    grid-area: main;
+    background-color: #FFFFFF;
+    text-align: center;
 }
 
-a{
+.name-t > h1{
     font-weight: 600;
-    font-size: 2em;
+    font-size: 4em;
+    padding: 1em 0;
+}
+.wellcome-t > p{
+    font-size: 3.2em;
+    padding: 1em 0 2em 0;
+}
+.link-t > a{
+    font-weight: 600;
     text-decoration: none;
+    border-radius: 7px;
+    background-color: #1089FF;
     color: white;
 
-    background-color: #264E58;
+    font-size: 4em;
 
-    border: solid 7px white;
-
-    border-radius: 70px;
-
-
-    padding: .6em 5em;
-}
-a:active{
-    color: white;
-    border-color: #264E58;
-    background-color: #112D31;
+    padding: .2em 2em;
 }
 
-#t-l{
-    position: absolute;
-    top: 0;
-    left: 0;
-
-    z-index: -1;
-}
-#t-r{
-    position: absolute;
-    top: 0;
-    right: 0;
-
-    z-index: -1;
-}
-#b-l{
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    
-    z-index: -1;
+.link-t > a:hover{
+    border: solid 1px #1116AB;
 }
 
-img {  
-    max-width: 100%; 
-    height: auto; 
-} 
-
-
-@media (max-width: 1080px){
-
-    body{
-        margin: auto;
-        font-size: 10px;
-    }
-    img{
-        display: none;
-    }
-    li{
-        padding-left: .2em;
-    }
-    a{
-        display: inline-block;
-        
-        min-width: 4em;
-        padding: .2em .6em;
-    }
-
+.link-t > a:active{
+    /* border: solid 1px #1116AB; */
+    background-color: #1116AB;
 }
+
+

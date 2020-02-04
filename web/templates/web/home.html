@@ -1,36 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
     {% load static %}
-    <script src="{% static 'web/index.js' %}"></script>
-    <link rel="stylesheet" href="{% static 'css/home.css' %}">
-
-    <title>Welcome</title>
-</head>
-<body>
-
-    <div>
-        <img id="t-l" src="{% static 'img/top-left.svg' %}" onerror="this.style.display='none'"/>
-        <img id="t-r" src="{% static 'img/top-right.svg' %}" onerror="this.style.display='none'"/>
-        <img id="b-l" src="{% static 'img/bottom-left.svg' %}" onerror="this.style.display='none'"/>
-        
-    </div>
+    <link rel="stylesheet" href="{% static 'css/home.css'%}" />
+    <link rel="icon" href="{% static 'img/icon.svg'%}">
+    <title>Proyect Mannager</title>
+  </head>
+  <body>
+    <header>
+      
+      <h2><img src="{% static 'img/icon.svg'%}" alt="Logo"> Welcome</h2>
+    </header>
     <main>
-        <h1>Project Manager</h1>
-        <p>
-            Welcome<br>
-            Just login or create an account<br>
-            and we can get<br>
-            started</p>
-        <ul>
-            <li><a href="/login/">Login</a></li>
-    
-        </ul>
+      <div class="filler1"></div>
+      <div class="main">
+
+        <div class="name-t"><h1>Proyect Mannager</h1></div>
+        <div class="wellcome-t">
+          <p>
+            Welcome <br />
+            Just login or create an account <br />
+            and we can get started
+          </p>
+        </div>
+        <div class="link-t"><a href="login/">Let's go</a></div>
+
+      </div>
+      <div class="filler2"></div>
     </main>
-    
-</body>
+  </body>
 </html>
