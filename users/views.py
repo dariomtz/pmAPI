@@ -63,7 +63,7 @@ def all_users(request):
         #save object to database
         model.save()
         
-        return JsonResponse(user_model_to_json(model))
+        return JsonResponse(user_model_to_json(model), status=201)
 
     elif request.method == 'PUT':
 
@@ -187,7 +187,7 @@ def change_password(request):
             return HttpResponseBadRequest(json.dumps(response), content_type='application/json')
 
         user = User.objects.get(username=form.cleaned_data['username'])
-        print(form.cleaned_data['password'])
+        
         user.set_password(form.cleaned_data['password'])
         user.save()
 
