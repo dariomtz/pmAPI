@@ -9,6 +9,7 @@ class ProjectForm(ModelForm):
             'description',
             'deadline',
             'status',
+            'public'
         ]
 
 class TaskForm(ModelForm):
