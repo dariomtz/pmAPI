@@ -65,11 +65,17 @@ class TestUsers(TestCase):
         self.assertEquals(response.status_code, 200)
         self.assert_valid_user(response.json())
 
+    def test_delete_user(self):
+        self.client.login(username=self.username, password=self.password)
+
+        response = self.client.delete('/api/users/')
+
+        self.assertEquals(response.status_code, 204)
+
 
     """ TODO: 
         Finish this test cases:
 
-    def test_delete_user(self):
     def test_login(self):
     def test_logout(self):
     def test_put_password(self):
