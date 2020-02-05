@@ -52,6 +52,21 @@ def project_list_query_set(QuerySet):
 @csrf_exempt
 def projects_view(request):
 
+    if not request.user.is_authenticated:
+        response = {
+                'kind': 'error',
+                'errors': {
+                    'request':[
+                        {
+                        'message': 'You are not logged in.',
+                        'code': 'auth'
+                        }
+                    ]
+                        
+                }
+            }
+        return HttpResponse(content=response, content_type='application/json', status=401)
+
     if request.method == 'GET':
         response = { 
             'kind': 'projects',
@@ -83,6 +98,21 @@ def projects_view(request):
 
 @csrf_exempt
 def project_view(request, projectId=None):
+
+    if not request.user.is_authenticated:
+        response = {
+                'kind': 'error',
+                'errors': {
+                    'request':[
+                        {
+                        'message': 'You are not logged in.',
+                        'code': 'auth'
+                        }
+                    ]
+                        
+                }
+            }
+        return HttpResponse(content=response, content_type='application/json', status=401)
 
     if not Project.objects.filter(id=projectId).exists():
         response = {
@@ -129,6 +159,21 @@ def project_view(request, projectId=None):
 
 @csrf_exempt
 def tasks_view(request, projectId=None):
+
+    if not request.user.is_authenticated:
+        response = {
+                'kind': 'error',
+                'errors': {
+                    'request':[
+                        {
+                        'message': 'You are not logged in.',
+                        'code': 'auth'
+                        }
+                    ]
+                        
+                }
+            }
+        return HttpResponse(content=response, content_type='application/json', status=401)
 
     if not Project.objects.filter(id=projectId).exists():
         response = {
@@ -179,6 +224,21 @@ def tasks_view(request, projectId=None):
 
 @csrf_exempt
 def task_view(request, projectId=None, taskId=None):
+
+    if not request.user.is_authenticated:
+        response = {
+                'kind': 'error',
+                'errors': {
+                    'request':[
+                        {
+                        'message': 'You are not logged in.',
+                        'code': 'auth'
+                        }
+                    ]
+                        
+                }
+            }
+        return HttpResponse(content=response, content_type='application/json', status=401)
 
     if not Project.objects.filter(id=projectId).exists():
         response = {
