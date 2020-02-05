@@ -50,11 +50,25 @@ class TestUsers(TestCase):
         self.assertEquals(response.status_code, 201)
         self.assert_valid_user(response.json())
 
+    def test_put_user(self):
+        self.client.login(username=self.username, password=self.password)
+
+        new_user = {
+            'username': 'dariongo',
+            'email': 'gusano@lol.com',
+            'first_name': 'Dario',
+            'last_name': 'Martinez'
+        }
+
+        response = self.client.put('/api/users/', data=new_user, content_type='application/json')
+
+        self.assertEquals(response.status_code, 200)
+        self.assert_valid_user(response.json())
+
+
     """ TODO: 
         Finish this test cases:
 
-    
-    def test_put_user(self):
     def test_delete_user(self):
     def test_login(self):
     def test_logout(self):
