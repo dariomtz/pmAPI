@@ -72,11 +72,24 @@ class TestUsers(TestCase):
 
         self.assertEquals(response.status_code, 204)
 
+    def test_login(self):
+        credentials = {
+            'username': self.username,
+            'password': self.password
+        }
+        response = self.client.post('/api/users/login/', data=credentials, content_type='application/json')
+
+        self.assertEquals(response.status_code, 204)
+
+        response = self.client.get('/api/users/')
+        self.assertEquals(response.status_code, 200)
+        self.assert_valid_user(response.json())
+
+
 
     """ TODO: 
         Finish this test cases:
 
-    def test_login(self):
     def test_logout(self):
     def test_put_password(self):
         """
