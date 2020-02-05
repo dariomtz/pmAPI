@@ -80,17 +80,20 @@ class TestUsers(TestCase):
         response = self.client.post('/api/users/login/', data=credentials, content_type='application/json')
 
         self.assertEquals(response.status_code, 204)
+        self.assertEqual(int(self.client.session['_auth_user_id']), self.user.pk)
 
-        response = self.client.get('/api/users/')
-        self.assertEquals(response.status_code, 200)
-        self.assert_valid_user(response.json())
+    def test_logout(self):
+        self.client.login(username=self.username, password=self.password)
 
+        response = self.client.get('/api/users/logout/')
+
+        self.assertEquals(response.status_code, 204)
+        self.assertNotIn('_auth_user_id', self.client.session)
 
 
     """ TODO: 
         Finish this test cases:
-
-    def test_logout(self):
+    
     def test_put_password(self):
         """
     
