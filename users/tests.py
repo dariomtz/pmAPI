@@ -89,11 +89,25 @@ class TestUsers(TestCase):
 
         self.assertEquals(response.status_code, 204)
         self.assertNotIn('_auth_user_id', self.client.session)
-
-
-    """ TODO: 
-        Finish this test cases:
     
     def test_put_password(self):
-        """
+        new_password = 'newImprovedPW'
+
+        self.client.login(username=self.username, password=self.password)
+
+        credentials = {
+            'username' : self.username,
+            'old_password' : self.password,
+            'password': new_password
+        }
+
+        response = self.client.put('/api/users/password/', data= credentials, content_type='application/json')
+
+        self.assertEquals(response.status_code, 204)
+
+        self.client.logout()
+
+        self.client.login(username=self.username, password=new_password)
+        self.assertEqual(int(self.client.session['_auth_user_id']), self.user.pk)
+
     
