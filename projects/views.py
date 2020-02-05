@@ -1,10 +1,14 @@
-import json, datetime
+import datetime
+import json
 
-from django.http import JsonResponse, HttpResponse, HttpResponseBadRequest, HttpResponseNotAllowed, HttpResponseNotFound
+from django.http import (HttpResponse, HttpResponseBadRequest,
+                         HttpResponseNotAllowed, HttpResponseNotFound,
+                         JsonResponse)
 from django.views.decorators.csrf import csrf_exempt
 
 from .forms import ProjectForm, TaskForm
 from .models import Project, Task
+
 
 def str_date(date):
     return str(date.replace(tzinfo=None, microsecond=0))
@@ -46,16 +50,16 @@ def project_list_query_set(QuerySet):
     return [project_model_to_json(model) for model in QuerySet]
 
 @csrf_exempt
-def all_projects(request):
+def projects_view(request):
 
-    if request.method == 'GET':#get all projects
+    if request.method == 'GET':
         response = { 
             'kind': 'projects',
             'projects': project_list_query_set(Project.objects.all()) 
         }
         return JsonResponse(response)
 
-    elif request.method == 'POST':#create a new project
+    elif request.method == 'POST':
 
         #validate input
         project = ProjectForm(json.loads(request.body))
@@ -78,12 +82,9 @@ def all_projects(request):
         return HttpResponseNotAllowed(['GET', 'POST'])
 
 @csrf_exempt
-def specific_project(request, projectId=None):
+def project_view(request, projectId=None):
 
-    #Validate that the project exists
-    try:
-        project = Project.objects.get(id=projectId)
-    except:
+    if not Project.objects.filter(id=projectId).exists():
         response = {
                 'kind': 'error',
                 'errors': {
@@ -97,67 +98,45 @@ def specific_project(request, projectId=None):
                 }
             }
         return HttpResponseNotFound(json.dumps(response) , content_type='application/json')
+    
+    project = Project.objects.get(id=projectId)
+
+    if  request.method == 'GET':
+        return JsonResponse(project_model_to_json(project, complete_tasks=True))
+
+    elif request.method == 'PUT':
+    
+        #validate input
+        project_input = ProjectForm(json.loads(request.body), instance=project)
+        if not project_input.is_valid():
+            response = {
+                'kind': 'error',
+                'errors': json.loads(project_input.errors.as_json())
+            }
+            return HttpResponseBadRequest(json.dumps(response), content_type='application/json')
+        
+        #Save changes in database
+        project.save()
+
+        return JsonResponse(project_model_to_json(project))
+
+    elif request.method == 'DELETE':
+        project.delete()
+        return HttpResponse(status=204)
+    
     else:
-        if  request.method == 'GET':#gets the specific project
-            return JsonResponse(project_model_to_json(project, complete_tasks=True))
-            
-        elif request.method == 'POST':#post a task to the project
-            
-            #validate input
-            task = TaskForm(json.loads(request.body))
-            if not task.is_valid():
-                response = {
-                    'kind': 'error',
-                    'errors': json.loads(task.errors.as_json())
-                }
-                return HttpResponseBadRequest(json.dumps(response) , content_type='application/json')
+        return HttpResponseNotAllowed(['GET', 'PUT', 'DELETE'])
 
-            #creation of new object
-            model = Task(project=project, **task.cleaned_data)
-            
-            #Save changes in database
-            model.save()
-            project.tasks.add(model)
+@csrf_exempt
+def tasks_view(request, projectId=None):
 
-            return JsonResponse(task_model_to_json(model))
-
-        elif request.method == 'PUT':#modify the entire project to these new values
-            
-            #validate input
-            project_input = ProjectForm(json.loads(request.body), instance=project)
-            if not project_input.is_valid():
-                response = {
-                    'kind': 'error',
-                    'errors': json.loads(project_input.errors.as_json())
-                }
-                return HttpResponseBadRequest(json.dumps(response), content_type='application/json')
-            
-            #Save changes in database
-            project.save()
-
-            return JsonResponse(project_model_to_json(project))
-
-        elif request.method == 'DELETE':#deletes the project
-            project.delete()
-            return HttpResponse(status=204)
-
-        else:
-            return HttpResponseNotAllowed(['GET', 'POST', 'PUT', 'DELETE'])
-
-def specific_task(request, projectId=None, taskId=None):
-
-    #validate that the project and task both exist
-    #the task must correspond with the project
-    try:
-        project = Project.objects.get(id=projectId)
-        task = project.tasks.get(id=taskId)
-    except:
+    if not Project.objects.filter(id=projectId).exists():
         response = {
                 'kind': 'error',
                 'errors': {
                     'request':[
                         {
-                        'message': 'A project or task with that id does not exist.',
+                        'message': 'A project with that id does not exist.',
                         'code': 'not found'
                         }
                     ]
@@ -165,29 +144,97 @@ def specific_task(request, projectId=None, taskId=None):
                 }
             }
         return HttpResponseNotFound(json.dumps(response) , content_type='application/json')
-    else:
+    
+    project = Project.objects.get(id=projectId)
 
-        if request.method == 'GET': 
-            return JsonResponse(task_model_to_json(task))
-
-        elif request.method == 'PUT':
-            #validate input
-            task_input = TaskForm(json.loads(request.body), instance=task)
-            if not task_input.is_valid():
-                response = {
-                    'kind': 'error',
-                    'errors': json.loads(task_input.errors.as_json())
-                }
-                return HttpResponseBadRequest(json.dumps(response), content_type='application/json')
+    if  request.method == 'GET':
+        response = {
+            'kind': 'task_list',
+            'tasks': task_list_query_set(project.tasks.all())
+        }
+        return JsonResponse(response)
+        
+    elif request.method == 'POST':
             
-            #Save changes in database
-            task.save()
+        #validate input
+        task = TaskForm(json.loads(request.body))
+        if not task.is_valid():
+            response = {
+                'kind': 'error',
+                'errors': json.loads(task.errors.as_json())
+            }
+            return HttpResponseBadRequest(json.dumps(response) , content_type='application/json')
 
-            return JsonResponse(task_model_to_json(task))
+        #creation of new object
+        model = Task(project=project, **task.cleaned_data)
+        
+        #Save changes in database
+        model.save()
+        project.tasks.add(model)
 
-        elif request.method == 'DELETE':
-            task.delete()
-            return HttpResponse(status=204)
+        return JsonResponse(task_model_to_json(model))
 
-        else:
-            return HttpResponseNotAllowed(['GET', 'PUT', 'DELETE'])
+    else:
+        return HttpResponseNotAllowed(['GET', 'POST'])
+
+@csrf_exempt
+def task_view(request, projectId=None, taskId=None):
+
+    if not Project.objects.filter(id=projectId).exists():
+        response = {
+                'kind': 'error',
+                'errors': {
+                    'request':[
+                        {
+                        'message': 'A project with that id does not exist.',
+                        'code': 'not found'
+                        }
+                    ]
+                        
+                }
+            }
+        return HttpResponseNotFound(json.dumps(response) , content_type='application/json')
+    
+    project = Project.objects.get(id=projectId)
+
+    if not project.tasks.filter(id=taskId).exists():
+        response = {
+                'kind': 'error',
+                'errors': {
+                    'request':[
+                        {
+                        'message': 'A task with that id does not exist or does not belong to this project.',
+                        'code': 'not found'
+                        }
+                    ]
+                        
+                }
+            }
+        return HttpResponseNotFound(json.dumps(response) , content_type='application/json')
+
+    task = project.tasks.get(id=taskId)
+
+    if request.method == 'GET': 
+        return JsonResponse(task_model_to_json(task))
+
+    elif request.method == 'PUT':
+        #validate input
+        task_input = TaskForm(json.loads(request.body), instance=task)
+        if not task_input.is_valid():
+            response = {
+                'kind': 'error',
+                'errors': json.loads(task_input.errors.as_json())
+            }
+            return HttpResponseBadRequest(json.dumps(response), content_type='application/json')
+        
+        #Save changes in database
+        task.save()
+
+        return JsonResponse(task_model_to_json(task))
+
+    elif request.method == 'DELETE':
+        task.delete()
+        return HttpResponse(status=204)
+
+    else:
+        return HttpResponseNotAllowed(['GET', 'PUT', 'DELETE'])

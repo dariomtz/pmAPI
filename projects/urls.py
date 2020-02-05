@@ -1,8 +1,10 @@
-from django.urls import path, include
+from django.urls import include, path
+
 from . import views
 
 urlpatterns = [
-    path('', views.all_projects, name='all-projects'),
-    path('<int:projectId>/', views.specific_project, name='specific-project'),
-    path('<int:projectId>/<int:taskId>/', views.specific_task, name='specific-task')
+    path('', views.projects_view, name='projects'),
+    path('<int:projectId>/', views.project_view, name='project'),
+    path('<int:projectId>/tasks/', views.tasks_view, name='tasks' ),
+    path('<int:projectId>/tasks/<int:taskId>/', views.task_view, name='task')
 ]
