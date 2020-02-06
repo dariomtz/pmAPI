@@ -1,5 +1,6 @@
 from django.db import models
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User
+from groups.models import Group
 
 class Project(models.Model):
     created = models.DateTimeField(auto_now_add=True)
@@ -8,6 +9,7 @@ class Project(models.Model):
     description = models.TextField(blank=True)
     public = models.BooleanField(default=False)
     author = models.ForeignKey(User, blank=True, related_name='projects', on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, null=True, related_name='projects', on_delete=models.CASCADE)
     deadline = models.DateTimeField()
     status = models.BooleanField(default=False)
 
