@@ -1,7 +1,7 @@
 import datetime, uuid
-from .task_testing_helper import TaskTestingHelper
+from .testing import TestingHelper
 
-class TestTasks(TaskTestingHelper):
+class TestTasks(TestingHelper):
     """
     def test_invalid_methods(self):
         ids = self.valid_task_id()
