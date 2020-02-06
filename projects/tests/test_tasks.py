@@ -52,10 +52,11 @@ class TestTasks(TestingHelper):
         self.assertEquals(response.status_code, 200)
         self.assert_valid_task(response.json())
 
-    """
-        TODO:
-        FINISH ADDING ALL THE TESTING FUNCTIONS
-
     def test_delete_task(self):
+        response = self.client.delete('/api/projects/' + str(self.project.id) + '/tasks/' + str(self.task.id) + '/')
 
-    """
+        self.assertEquals(response.status_code, 204)
+
+        response = self.client.get('/api/projects/' + str(self.project.id) + '/tasks/' + str(self.task.id) + '/')
+
+        self.assertEquals(response.status_code, 404)
