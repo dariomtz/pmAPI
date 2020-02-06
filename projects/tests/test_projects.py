@@ -77,46 +77,29 @@ class TestProjects(TestCase):
     def test_get_project(self):
         response = self.client.get('/api/projects/' + str(self.project.id) + '/')
 
-        self.assert_valid_project(response.json())
-
-    """ TODO: 
-        Finish all these testing functions
-    
-    
-    def test_put_project(self):
-    def test_delete_project(self):
-
-
-    old functions        
-    
-    def test_get_valid_project(self):
-        response = self.client.get('/api/projects/' + self.valid_project_id() + '/')
         self.assertEquals(response.status_code, 200)
         self.assert_valid_project(response.json())
 
-    def test_post_valid_project(self):
-        new_project = {
-            'title':'This is a sample title.',
-            'description': 'This is a sample description.',
-            'deadline': str(datetime.datetime.today())
-        }
-
-        self.assert_post_valid_project(new_project) 
-
-    def test_put_valid_project(self):
+    def test_put_project(self):
         new_project = {
             'title': 'A changed salmple title.',
             'description': 'A changed sample description.', 
             'deadline': str(datetime.datetime.now()),
             'status': False
         }
+        
+        response = self.client.put('/api/projects/' + str(self.project.id),
+                                    data= new_project,
+                                    content_type='application/json')
+        
+        self.assertEquals(response.status_code, 200)
+        self.assert_valid_project(response.json())
 
-        response = self.assert_put_valid_project(new_project)
-
-        self.assertEquals(response['status'], False)
-
-    def test_delete_valid_project(self):
-        response = self.client.delete('/api/projects/' + self.valid_project_id() + '/')
+    def test_delete_project(self):
+        response = self.client.delete('/api/projects/' + str(self.project.id) + '/')
 
         self.assertEquals(response.status_code, 204)
-    """
+
+        response = self.client.get('/api/projects/' + str(self.project.id) + '/')
+
+        self.assertEquals(response.status_code, 404)
