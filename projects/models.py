@@ -8,8 +8,7 @@ class Project(models.Model):
     description = models.TextField(blank=True)
     public = models.BooleanField(default=False)
     individual = models.BooleanField(default=True)
-    author = models.OneToOneField(User, blank=True, related_name='projects', on_delete=models.CASCADE)
-    tasks = models.ManyToManyField('Task',blank=True, related_name='projects')
+    author = models.ForeignKey(User, blank=True, related_name='projects', on_delete=models.CASCADE)
     deadline = models.DateTimeField()
     status = models.BooleanField(default=False)
 
@@ -22,7 +21,7 @@ class Task(models.Model):
     updated = models.DateTimeField(auto_now=True)
     title = models.CharField(max_length=100, blank=True)
     description = models.TextField(blank=True)
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='tasks')
     deadline = models.DateTimeField()
     #inCharge = models.ManyToManyField(Group, related_name='tasks')
     resources = models.TextField(blank=True)
