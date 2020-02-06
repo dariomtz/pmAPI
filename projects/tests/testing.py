@@ -21,6 +21,20 @@ class TestingHelper(TestCase):
         self.assertIn('public', project)
         self.assertIn('individual', project)
 
+    def assert_valid_task(self, task):
+        self.assertIn('kind', task)
+        self.assertEquals(task['kind'], 'task')
+
+        self.assertIn('id', task)
+        self.assertIn('title', task)
+        self.assertIn('description', task)
+        self.assertIn('created', task)
+        self.assertIn('updated', task)
+        self.assertIn('deadline', task)
+        self.assertIn('status', task)
+        self.assertIn('project', task)
+        self.assertIn('resources', task)
+
     def setUp(self):
         self.client = Client()
         self.username = 'test_username'
