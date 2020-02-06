@@ -7,7 +7,6 @@ class Project(models.Model):
     title = models.CharField(max_length=100, blank=True)
     description = models.TextField(blank=True)
     public = models.BooleanField(default=False)
-    individual = models.BooleanField(default=True)
     author = models.ForeignKey(User, blank=True, related_name='projects', on_delete=models.CASCADE)
     deadline = models.DateTimeField()
     status = models.BooleanField(default=False)

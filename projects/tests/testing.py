@@ -19,7 +19,6 @@ class TestingHelperAuth(TestCase):
         self.assertIn('tasks', project)
         self.assertIn('author', project)
         self.assertIn('public', project)
-        self.assertIn('individual', project)
 
     def assert_valid_task(self, task):
         self.assertIn('kind', task)

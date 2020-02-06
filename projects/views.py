@@ -43,7 +43,6 @@ def project_model_to_json(project, complete_tasks=False):
         'created': str_date(project.created),
         'updated': str_date(project.updated),
         'public': project.public,
-        'individual': project.individual,
         'tasks': task_list_query_set(project.tasks.all()) if complete_tasks else list_ids_query_set(project.tasks.all()),
         'deadline': str_date(project.deadline),
         'status': project.status,
