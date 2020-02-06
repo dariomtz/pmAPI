@@ -60,3 +60,56 @@ class TestTasksAuth(TestingHelperAuth):
         response = self.client.get('/api/projects/' + str(self.project.id) + '/tasks/' + str(self.task.id) + '/')
 
         self.assertEquals(response.status_code, 404)
+
+class TestTasksNotAuth(TestingHelperNotAuth):
+
+    def test_get_tasks(self):
+        response = self.client.get('/api/projects/' + str(self.project.id) + '/tasks/')
+
+        self.assertEquals(response.status_code, 401)
+
+        self.assert_valid_error(response.json())
+
+    def test_post_tasks(self):
+        new_task = {
+            'title': 'Example.',
+            'description': 'Example.',
+            'deadline': str(datetime.datetime.now()),
+            'status': True
+        }
+
+        response = self.client.post('/api/projects/' + str(self.project.id) + '/tasks/',
+                                    data=new_task,
+                                    content_type='application/json')
+
+        self.assertEquals(response.status_code, 401)
+        self.assert_valid_error(response.json())
+
+    def test_get_task(self):
+        response = self.client.get('/api/projects/' + str(self.project.id) + '/tasks/' + str(self.task.id) + '/')
+
+        self.assertEquals(response.status_code, 401)
+        self.assert_valid_error(response.json())
+
+    def test_put_task(self):
+        new_task = {
+            'title': 'Example title.',
+            'description': 'Example description.',
+            'deadline': str(datetime.datetime.now()),
+            'status' : True
+        }
+
+        response = self.client.put('/api/projects/' + str(self.project.id) + '/tasks/' + str(self.task.id) + '/',
+                                    data=new_task,
+                                    content_type='application/json')
+        
+        self.assertEquals(response.status_code, 401)
+        self.assert_valid_error(response.json())
+
+    def test_delete_task(self):
+        response = self.client.delete('/api/projects/' + str(self.project.id) + '/tasks/' + str(self.task.id) + '/')
+
+        self.assertEquals(response.status_code, 401)
+        self.assert_valid_error(response.json())
+
+        
