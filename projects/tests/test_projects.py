@@ -62,11 +62,22 @@ class TestProjects(TestCase):
         for project in all_projects['projects']:
             self.assert_valid_project(project)
 
+    def test_post_project(self):
+        new_project = {
+            'title': 'Example project',
+            'description': 'Example description',
+            'deadline' : str(datetime.datetime.now())
+        }
+
+        response = self.client.post('/api/projects/', data=new_project, content_type='application/json')
+
+        self.assertEquals(response.status_code, 201)
+        self.assert_valid_project(response.json())
+
+
     """ TODO: 
         Finish all these testing functions
-        
     
-    def test_post_project(self):
     def test_get_project(self):
     def test_put_project(self):
     def test_delete_project(self):
@@ -99,16 +110,6 @@ class TestProjects(TestCase):
         response = self.assert_put_valid_project(new_project)
 
         self.assertEquals(response['status'], False)
-
-    def test_put_invalid_project_invalid_title(self):
-        new_project = {
-            'title': 'Very large invalid title. Very large invalid title. Very large invalid title. Very large invalid title.Very large invalid title. Very large invalid title. Very large invalid title. Very large invalid title. Very large invalid title.',
-            'description': 'Valid description.',
-            'deadline': str(datetime.datetime.now()),
-            'status': False
-        }
-
-        self.assert_put_invalid_project(new_project)
 
     def test_delete_valid_project(self):
         response = self.client.delete('/api/projects/' + self.valid_project_id() + '/')
