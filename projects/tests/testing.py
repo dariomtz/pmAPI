@@ -58,6 +58,15 @@ class TestingHelper(TestCase):
         )
 
         self.project.save()
+
+        self.task = Task(
+            title='EXAMPLE',
+            description='EXAMPLE',
+            deadline=datetime.datetime.now(),
+            project=self.project
+        )
+
+        self.task.save()
+
         self.client.login(username=self.username, password=self.password)
-   
 
