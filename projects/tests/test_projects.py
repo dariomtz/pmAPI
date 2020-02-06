@@ -74,11 +74,15 @@ class TestProjects(TestCase):
         self.assertEquals(response.status_code, 201)
         self.assert_valid_project(response.json())
 
+    def test_get_project(self):
+        response = self.client.get('/api/projects/' + str(self.project.id) + '/')
+
+        self.assert_valid_project(response.json())
 
     """ TODO: 
         Finish all these testing functions
     
-    def test_get_project(self):
+    
     def test_put_project(self):
     def test_delete_project(self):
 
