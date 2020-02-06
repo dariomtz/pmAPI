@@ -37,12 +37,25 @@ class TestTasks(TestingHelper):
         self.assertEquals(response.status_code, 200)
         self.assert_valid_task(response.json())
 
+    def test_put_task(self):
+        new_task = {
+            'title': 'Example title.',
+            'description': 'Example description.',
+            'deadline': str(datetime.datetime.now()),
+            'status' : True
+        }
+
+        response = self.client.put('/api/projects/' + str(self.project.id) + '/tasks/' + str(self.task.id) + '/',
+                                    data=new_task,
+                                    content_type='application/json')
+        
+        self.assertEquals(response.status_code, 200)
+        self.assert_valid_task(response.json())
+
     """
         TODO:
         FINISH ADDING ALL THE TESTING FUNCTIONS
 
-    def test_get_task(self):
-    def test_put_task(self):
     def test_delete_task(self):
 
     """
