@@ -220,7 +220,7 @@ def tasks_view(request, projectId=None):
         model.save()
         project.tasks.add(model)
 
-        return JsonResponse(task_model_to_json(model))
+        return JsonResponse(task_model_to_json(model), status=201)
 
     else:
         return HttpResponseNotAllowed(['GET', 'POST'])
