@@ -59,3 +59,51 @@ class TestProjectsAuth(TestingHelperAuth):
         response = self.client.get('/api/projects/' + str(self.project.id) + '/')
 
         self.assertEquals(response.status_code, 404)
+
+class TestProjectsNotAuth(TestingHelperNotAuth):
+    def test_get_projects(self):
+        response = self.client.get('/api/projects/')
+
+        self.assertEquals(response.status_code, 401)
+        
+        self.assert_valid_error(response.json())
+
+    def test_post_project(self):
+        new_project = {
+            'title': 'Example project',
+            'description': 'Example description',
+            'deadline' : str(datetime.datetime.now())
+        }
+
+        response = self.client.post('/api/projects/', data=new_project, content_type='application/json')
+
+        self.assertEquals(response.status_code, 401)
+        self.assert_valid_error(response.json())
+
+    def test_get_project(self):
+        response = self.client.get('/api/projects/' + str(self.project.id) + '/')
+
+        self.assertEquals(response.status_code, 401)
+        self.assert_valid_error(response.json())
+
+    def test_put_project(self):
+        new_project = {
+            'title': 'A changed salmple title.',
+            'description': 'A changed sample description.', 
+            'deadline': str(datetime.datetime.now()),
+            'status': False
+        }
+        
+        response = self.client.put('/api/projects/' + str(self.project.id) + '/',
+                                    data= new_project,
+                                    content_type='application/json')
+        
+        self.assertEquals(response.status_code, 401)
+        self.assert_valid_error(response.json())
+
+    def test_delete_project(self):
+        response = self.client.delete('/api/projects/' + str(self.project.id) + '/')
+
+        self.assertEquals(response.status_code, 401)
+
+        self.assert_valid_error(response.json())
