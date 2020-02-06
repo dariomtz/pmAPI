@@ -46,18 +46,9 @@ class TestProjects(TestCase):
         )
 
         self.project.save()
-
-    """ TODO: 
-        Finish all these testing functions
+        self.client.login(username=self.username, password=self.password)
         
     def test_get_projects(self):
-    def test_post_project(self):
-    def test_get_project(self):
-    def test_put_project(self):
-    def test_delete_project(self):
-        """
-    def test_get_valid_projects(self):
-
         response = self.client.get('/api/projects/')
 
         self.assertEquals(response.status_code, 200)
@@ -70,6 +61,18 @@ class TestProjects(TestCase):
 
         for project in all_projects['projects']:
             self.assert_valid_project(project)
+
+    """ TODO: 
+        Finish all these testing functions
+        
+    
+    def test_post_project(self):
+    def test_get_project(self):
+    def test_put_project(self):
+    def test_delete_project(self):
+
+
+    old functions        
     
     def test_get_valid_project(self):
         response = self.client.get('/api/projects/' + self.valid_project_id() + '/')
@@ -111,3 +114,4 @@ class TestProjects(TestCase):
         response = self.client.delete('/api/projects/' + self.valid_project_id() + '/')
 
         self.assertEquals(response.status_code, 204)
+    """

@@ -2,6 +2,7 @@ import datetime, uuid
 from .task_testing_helper import TaskTestingHelper
 
 class TestTasks(TaskTestingHelper):
+    """
     def test_invalid_methods(self):
         ids = self.valid_task_id()
         self.assert_invalid_methods('/api/projects/' + ids['projectId'] + '/' + ids['taskId'] + '/',
@@ -113,3 +114,4 @@ class TestTasks(TaskTestingHelper):
     def test_delete_invalid_task(self):
         return
 
+"""
