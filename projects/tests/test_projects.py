@@ -88,7 +88,7 @@ class TestProjects(TestCase):
             'status': False
         }
         
-        response = self.client.put('/api/projects/' + str(self.project.id),
+        response = self.client.put('/api/projects/' + str(self.project.id) + '/',
                                     data= new_project,
                                     content_type='application/json')
         
