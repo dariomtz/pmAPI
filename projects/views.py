@@ -89,12 +89,12 @@ def projects_view(request):
             return HttpResponseBadRequest(json.dumps(response), content_type='application/json')
         
         #creation of new object
-        model = Project(**project.cleaned_data)
+        model = Project(author=request.user, **project.cleaned_data)
         
         #Save changes in database
         model.save()
 
-        return JsonResponse(project_model_to_json(model))
+        return JsonResponse(project_model_to_json(model), status=201)
     
     else:
         return HttpResponseNotAllowed(['GET', 'POST'])
