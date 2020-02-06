@@ -1,70 +1,3 @@
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
-
-
-		
-
-        {% load static %}
-        <script src="{% static 'web/login.js' %}"></script>
-        <link rel="stylesheet" href="{% static 'css/login.css' %}">
-		<title>Login</title>
-	</head>
-	<body>
-		<header>
-			<h1>Project Manager</h1>
-		</header>
-
-		<main>
-			<div class="space"></div>
-			<div class="form">
-				<div class="space"></div>
-				<div class="space">
-					<form action="...">
-						<div class="form-item"></div>
-						<div class="form-item inactive">
-							<label for="email">Email</label> <br />
-							<input type="email" name="email" id="email" />
-						</div>
-						<div class="form-item">
-							<label for="username">Username</label> <br />
-							<input type="text" name="username" id="username" />
-						</div>
-						<div class="form-item">
-							<label for="password">Pasword</label> <br />
-							<input type="password" name="pasdword" id="password" />
-						</div>
-						<div class="form-item inactive">
-							<label for="r-password">Repeat Password</label> <br />
-							<input type="password" name="r-password" id="r-password" />
-						</div>
-						<div class="form-item b">
-							<div class="buttons" >
-								<a onclick="toggleVisible()" id="noAcount">Doesn't have an acount<br />Register.</a>
-							</div>
-							<div class="buttons inactive" >
-								<a onclick="toggleVisible()" id="acount"
-									>Already have an acount?<br />Login.</a
-								>
-							</div>
-							<div class="buttons">
-								<input type="submit" name="register" id="register" />
-							</div>
-						</div>
-						<div class="form-item"></div>
-					</form>
-
-					<div class="space"></div>
-				</div>
-			</div>
-			<div class="space"></div>
-		</main>
-
-		<script src="js/script.js"></script>
-	</body>
-</html>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -87,7 +20,7 @@
       <div class="filler1"></div>
       <div class="main">
         <!--Form register-->
-        <form action="" method="get" class="unseen" id="registro">
+        <form class="unseen" id="registro">
           <div class="input_container">
             <!--Email-->
             <label for="email" class="noselect">Email</label>
@@ -118,9 +51,11 @@
           <div class="input_container">
             <input type="submit" value="Registrarse" class="submit_button" />
           </div>
+
+
         </form>
         <!--Form login-->
-        <form action="" method="get" id="login">
+        <form id="login">
           <div class="input_container">
             <!--Usuario-->
             <label for="username" class="noselect">Usuario</label>
@@ -145,6 +80,6 @@
       <div class="filler2"></div>
     </main>
 
-    <script src="{% static 'web/scrip.js'%}"></script>
+    <script src="{% static 'web/script.js'%}"></script>
   </body>
 </html>
