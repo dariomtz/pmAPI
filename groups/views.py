@@ -1,3 +1,11 @@
-from django.shortcuts import render
+import datetime
+import json
 
-# Create your views here.
+from django.http import (HttpResponse, HttpResponseBadRequest,
+                         HttpResponseNotAllowed, HttpResponseNotFound,
+                         JsonResponse)
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
+def groups_view(request):
+    return JsonResponse({})
