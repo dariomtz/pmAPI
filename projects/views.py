@@ -68,7 +68,7 @@ def projects_view(request):
                         
                 }
             }
-        return HttpResponse(content=response, content_type='application/json', status=401)
+        return HttpResponse(content=json.dumps(response), content_type='application/json', status=401)
 
     if request.method == 'GET':
         response = { 
@@ -115,7 +115,7 @@ def project_view(request, projectId=None):
                         
                 }
             }
-        return HttpResponse(content=response, content_type='application/json', status=401)
+        return HttpResponse(content=json.dumps(response), content_type='application/json', status=401)
 
     if not Project.objects.filter(id=projectId).exists():
         response = {
@@ -176,7 +176,7 @@ def tasks_view(request, projectId=None):
                         
                 }
             }
-        return HttpResponse(content=response, content_type='application/json', status=401)
+        return HttpResponse(content=json.dumps(response), content_type='application/json', status=401)
 
     if not Project.objects.filter(id=projectId).exists():
         response = {
@@ -241,7 +241,7 @@ def task_view(request, projectId=None, taskId=None):
                         
                 }
             }
-        return HttpResponse(content=response, content_type='application/json', status=401)
+        return HttpResponse(content=json.dumps(response), content_type='application/json', status=401)
 
     if not Project.objects.filter(id=projectId).exists():
         response = {
