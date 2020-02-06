@@ -1,7 +1,7 @@
 import datetime, uuid
-from .testing import TestingHelper
+from .testing import TestingHelperAuth, TestingHelperNotAuth
 
-class TestTasks(TestingHelper):
+class TestTasksAuth(TestingHelperAuth):
 
     def test_get_tasks(self):
         response = self.client.get('/api/projects/' + str(self.project.id) + '/tasks/')

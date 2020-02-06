@@ -1,8 +1,8 @@
 import datetime
 
-from .testing import TestingHelper
+from .testing import TestingHelperAuth, TestingHelperNotAuth
 
-class TestProjects(TestingHelper):
+class TestProjectsAuth(TestingHelperAuth):
      
     def test_get_projects(self):
         response = self.client.get('/api/projects/')

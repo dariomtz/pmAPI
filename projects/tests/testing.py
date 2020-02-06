@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.test import Client, TestCase
 from projects.models import Project, Task
 
-class TestingHelper(TestCase):
+class TestingHelperAuth(TestCase):
     def assert_valid_project(self, project):
         self.assertIn('kind', project)
         self.assertEquals(project['kind'], 'project')
@@ -69,4 +69,44 @@ class TestingHelper(TestCase):
         self.task.save()
 
         self.client.login(username=self.username, password=self.password)
+
+class TestingHelperNotAuth(TestCase):
+    def assert_valid_error(self, error):
+        self.assertIn('kind', error)
+        self.assertEquals(error['kind'], 'error')
+
+        self.assertIn('errors', error)
+    
+    def setUp(self):
+        self.client = Client()
+        self.username = 'test_username'
+        self.password = 'test_strong_password'
+
+        self.user = User.objects.create_user(
+            username=self.username, 
+            first_name='Gustavo',
+            last_name='Martinez',
+            email='dario@iteso.mx',
+            password=self.password)
+
+        self.user.set_password(self.password)
+        self.user.save()
+
+        self.project = Project(
+            title='EXAMPLE',
+            description='EXAMPLE',
+            deadline=datetime.datetime.now(),
+            author=self.user
+        )
+
+        self.project.save()
+
+        self.task = Task(
+            title='EXAMPLE',
+            description='EXAMPLE',
+            deadline=datetime.datetime.now(),
+            project=self.project
+        )
+
+        self.task.save()
 
