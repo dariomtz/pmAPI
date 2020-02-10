@@ -40,6 +40,22 @@ main{
   display: block;
 }
 
+.input_container_inside {
+  display: grid;
+  grid-template-areas: "nombre last-name";
+  grid-template-rows: repeat(1fr, 2);
+}
+
+.input_container_inside_name{
+  grid-area: nombre;
+}
+.input_container_inside_last-name{
+  grid-area: last-name;
+}
+
+.input_container_inside input{
+ max-width: 223px; 
+}
 .main label{
   display: block;
   padding-top: .6em;
@@ -88,7 +104,12 @@ main{
   display: none;
 }
 
-
+.aling_left{
+  float: left;
+}
+.aling_right{
+  float: right;
+}
 .noselect {
   -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */
