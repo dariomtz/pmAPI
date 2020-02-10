@@ -1,22 +1,21 @@
 @import url('https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600&display=swap');
-
-html *{
+html * {
     margin: 0px;
     padding: 0px;
     font-size: 16px;
     font-family: 'Montserrat', sans-serif;
 }
 
-body{
+body {
     background-color: #F8F8F8;
 }
 
-header{
+header {
     height: minmax(50px, 30%);
     background-color: #23374D;
 }
 
-header h2{
+header h2 {
     font-weight: 600;
     padding: .2em 2em;
     text-align: center;
@@ -24,98 +23,112 @@ header h2{
     color: white;
 }
 
-main{
-  display: grid;
-  grid-template-areas: "filler1 main filler2";
+main {
+    display: grid;
+    grid-template-areas: "filler1 main filler2";
 }
 
-
-.main{
-  grid-area: main;
-  background-color: #FFFFFF;
+.main {
+    grid-area: main;
+    display: grid;
+    grid-template-areas: "white_space1 form white_space2";
+    background-color: #FFFFFF;
 }
 
-.input_container{
-  text-align: center;
-  display: block;
+.form {
+    grid-area: form;
+}
+
+.input_container {
+    text-align: center;
+    display: block;
 }
 
 .input_container_inside {
-  display: grid;
-  grid-template-areas: "nombre last-name";
-  grid-template-rows: repeat(1fr, 2);
+    display: grid;
+    grid-template-areas: "nombre last-name";
+    grid-template-rows: repeat(1fr, 2);
 }
 
-.input_container_inside_name{
-  grid-area: nombre;
-}
-.input_container_inside_last-name{
-  grid-area: last-name;
+.input_container_inside_name {
+    grid-area: nombre;
 }
 
-.input_container_inside input{
- max-width: 223px; 
-}
-.main label{
-  display: block;
-  padding-top: .6em;
-  font-size: 2em;
-}
-.main input{
-  font-size: 2em;
+.input_container_inside_last-name {
+    grid-area: last-name;
 }
 
-.submit_button{
-  margin: 1em 0;
-
-  font-weight: 600;
-  text-decoration: none;
-  border-radius: 7px;
-  border: none;
-  background-color: #1089FF;
-  color: white;
-
-  font-size: 4em;
-
-  padding: .2em 2em;
-}
-.submit_button:hover{
-  border: solid 1px #1116AB;
-}
-.submit_button:active{
-  /* border: solid 1px #1116AB; */
-  background-color: #1116AB;
+.input_container_inside input {
+    max-width: 223px;
 }
 
-.texto_cambio{
-  color: blue;
-  display: block;
-  text-decoration: underline;
-  margin-bottom: 1em;
-
+.main label {
+    display: block;
+    padding-top: .6em;
+    font-size: 2em;
 }
 
-.texto_cambio:hover{
-  cursor: pointer;
+.main input {
+    font-size: 1.5em;
+    width: 446px;
 }
 
-
-.unseen{
-  display: none;
+.submit_button {
+    margin: 1em 0;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 7px;
+    border: solid 1px #1089FF;
+    background-color: #1089FF;
+    color: white;
+    font-size: 4em;
+    padding: .2em 2em;
 }
 
-.aling_left{
-  float: left;
+.submit_button:hover {
+    border: solid 1px #1116AB;
 }
-.aling_right{
-  float: right;
+
+.submit_button:active {
+    /* border: solid 1px #1116AB; */
+    background-color: #1116AB;
 }
+
+.texto_cambio {
+    color: blue;
+    display: block;
+    text-decoration: underline;
+    margin-bottom: 1em;
+}
+
+.texto_cambio:hover {
+    cursor: pointer;
+}
+
+.unseen {
+    display: none;
+}
+
+.aling_left {
+    float: left;
+}
+
+.aling_right {
+    float: right;
+}
+
 .noselect {
-  -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
-     -khtml-user-select: none; /* Konqueror HTML */
-       -moz-user-select: none; /* Old versions of Firefox */
-        -ms-user-select: none; /* Internet Explorer/Edge */
-            user-select: none; /* Non-prefixed version, currently
+    -webkit-touch-callout: none;
+    /* iOS Safari */
+    -webkit-user-select: none;
+    /* Safari */
+    -khtml-user-select: none;
+    /* Konqueror HTML */
+    -moz-user-select: none;
+    /* Old versions of Firefox */
+    -ms-user-select: none;
+    /* Internet Explorer/Edge */
+    user-select: none;
+    /* Non-prefixed version, currently
                                   supported by Chrome, Opera and Firefox */
 }

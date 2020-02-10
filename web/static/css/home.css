@@ -1,22 +1,21 @@
 @import url('https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600&display=swap');
-
-html *{
+html * {
     margin: 0px;
     padding: 0px;
     font-size: 16px;
     font-family: 'Montserrat', sans-serif;
 }
 
-body{
+body {
     background-color: #F8F8F8;
 }
 
-header{
+header {
     height: minmax(50px, 30%);
     background-color: #23374D;
 }
 
-header h2{
+header h2 {
     font-weight: 600;
     padding: .2em 2em;
     text-align: center;
@@ -24,45 +23,44 @@ header h2{
     color: white;
 }
 
-main{
+main {
     display: grid;
     grid-template-areas: "filler1 main filler2";
 }
 
-.main{
+.main {
     grid-area: main;
     background-color: #FFFFFF;
     text-align: center;
 }
 
-.name-t > h1{
+.name-t>h1 {
     font-weight: 600;
     font-size: 4em;
     padding: 1em 0;
 }
-.wellcome-t > p{
+
+.wellcome-t>p {
     font-size: 3.2em;
     padding: 1em 0 2em 0;
 }
-.link-t > a{
+
+.link-t>a {
     font-weight: 600;
     text-decoration: none;
     border-radius: 7px;
+    border: solid 1px #1089FF;
     background-color: #1089FF;
     color: white;
-
     font-size: 4em;
-
     padding: .2em 2em;
 }
 
-.link-t > a:hover{
+.link-t>a:hover {
     border: solid 1px #1116AB;
 }
 
-.link-t > a:active{
+.link-t>a:active {
     /* border: solid 1px #1116AB; */
     background-color: #1116AB;
 }
-
-

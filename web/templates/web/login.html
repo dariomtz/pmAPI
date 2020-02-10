@@ -1,92 +1,92 @@
-
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
-		
-		{% load static %}
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" /> {% load static %}
     <link rel="stylesheet" href="{% static 'css/login.css'%}" />
 
     <link rel="icon" href="{% static 'img/icon.svg'%}" />
     <title>Proyect Mannager Login</title>
-  </head>
-  <body>
+</head>
+
+<body>
     <header>
-      <h2><img src="{% static 'img/icon.svg'%}" alt="Logo" /> Login</h2>
+        <h2><img src="{% static 'img/icon.svg'%}" alt="Logo" /> Login</h2>
     </header>
     <main>
-      <div class="filler1"></div>
-      <div class="main">
-        <!--Form register-->
-        <form class="unseen" id="registro">
-          <div class="input_container">
-            <!--Usuario-->
-            <label for="username" class="noselect">Usuario</label>
-            <input type="text" name="username" id="username" />
-          </div>
-          <div class="input_container input_container_inside">
-            <div class="input_container_inside_name">
-              <!--Name-->
-              <label for="name" class="noselect">Nombre</label>
-              <input type="text" name="name" id="name" class="aling_right"/>
+        <div class="filler1"></div>
+        <div class="main">
+            <div class="white_space1"></div>
+            <div class="form">
+                <!--Form register-->
+                <form class="unseen" id="registro">
+                    <div class="input_container">
+                        <!--Usuario-->
+                        <label for="username" class="noselect">Usuario</label>
+                        <input type="text" name="username" id="username" />
+                    </div>
+                    <div class="input_container input_container_inside">
+                        <div class="input_container_inside_name">
+                            <!--Name-->
+                            <label for="name" class="noselect">Nombre</label>
+                            <input type="text" name="name" id="name" class="aling_right" />
+                        </div>
+                        <div class="input_container_inside_last-name">
+                            <!--Last_Name-->
+                            <label for="last_name" class="noselect">Apellido</label>
+                            <input type="text" name="last_name" id="last_name" class="aling_left" />
+                        </div>
+                    </div>
+                    <div class=" input_container">
+                        <!--Email-->
+                        <label for="email" class="noselect">Email</label>
+                        <input type="email" name="email" id="email" />
+                    </div>
+                    <div class="input_container">
+                        <!--Contraseña-->
+                        <label for="pasword" class="noselect">Contraseña</label>
+                        <input type="password" name="password" id="password" />
+                        <!--<input type="checkbox" onclick="showPassword()"> Show-->
+                    </div>
+                    <div class="input_container">
+                        <!--Repetir contraseña-->
+                        <label for="r_password" class="noselect">Repetir contraseña</label>
+                        <input type="password" name="r_password" id="r_password" />
+                        <!--<input type="checkbox" onclick="showR_Password()"> Show-->
+                    </div>
+                    <div class="input_container">
+                        <input type="submit" value="Registrarse" class="submit_button" />
+                    </div>
+                </form>
+                <!--Form login-->
+                <form id="login">
+                    <div class="input_container">
+                        <!--Usuario-->
+                        <label for="username" class="noselect">Usuario</label>
+                        <input type="text" name="username" id="username" />
+                    </div>
+                    <div class="input_container">
+                        <!--Contraseña-->
+                        <label for="pasword" class="noselect">Contraseña</label>
+                        <input type="password" name="password" id="password" />
+                        <!--<input type="checkbox" onclick="showPassword()"> Show-->
+                    </div>
+                    <div class="input_container">
+                        <input type="submit" value="Login" class="submit_button" />
+                    </div>
+                </form>
+                <div class="input_container">
+                    <span class="texto_cambio noselect" onclick="toggleForm()">Ya tienes una cuenta? Ingresa</span>
+                </div>
             </div>
-            <div class="input_container_inside_last-name">
-              <!--Last_Name-->
-              <label for="last_name" class="noselect">Apellido</label>
-              <input type="text" name="last_name" id="last_name" class="aling_left"/>
-            </div>
-          </div>
-          <div class="input_container">
-            <!--Email-->
-            <label for="email" class="noselect">Email</label>
-            <input type="email" name="email" id="email" />
-          </div>
-          <div class="input_container">
-            <!--Contraseña-->
-            <label for="pasword" class="noselect">Contraseña</label>
-            <input type="password" name="password" id="password" />
-            <!--<input type="checkbox" onclick="showPassword()"> Show-->
-          </div>
-          <div class="input_container">
-            <!--Repetir contraseña-->
-            <label for="r_password" class="noselect">Repetir contraseña</label>
-            <input type="password" name="r_password" id="r_password" />
-            <!--<input type="checkbox" onclick="showR_Password()"> Show-->
-          </div>
-          <div class="input_container">
-            <input type="submit" value="Registrarse" class="submit_button" />
-          </div>
-
-
-        </form>
-        <!--Form login-->
-        <form id="login">
-          <div class="input_container">
-            <!--Usuario-->
-            <label for="username" class="noselect">Usuario</label>
-            <input type="text" name="username" id="username" />
-          </div>
-          <div class="input_container">
-            <!--Contraseña-->
-            <label for="pasword" class="noselect">Contraseña</label>
-            <input type="password" name="password" id="password" />
-            <!--<input type="checkbox" onclick="showPassword()"> Show-->
-          </div>
-          <div class="input_container">
-            <input type="submit" value="Login" class="submit_button" />
-          </div>
-        </form>
-        <div class="input_container">
-          <span class="texto_cambio noselect" onclick="toggleForm()"
-            >Ya tienes una cuenta? Ingresa</span
-          >
+            <div class="white_space2"></div>
         </div>
-      </div>
-      <div class="filler2"></div>
+        <div class="filler2"></div>
     </main>
 
     <script src="{% static 'web/script.js'%}"></script>
-  </body>
+</body>
+
 </html>
