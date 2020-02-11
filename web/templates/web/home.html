@@ -1,36 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/home.css'%}" />
-    <link rel="icon" href="{% static 'img/icon.svg'%}">
-    <title>Proyect Mannager</title>
-  </head>
-  <body>
-    <header>
-      
-      <h2><img src="{% static 'img/icon.svg'%}" alt="Logo"> Welcome</h2>
-    </header>
-    <main>
-      <div class="filler1"></div>
-      <div class="main">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/home.css'%}" />
+<link rel="icon" href="{% static 'img/icon.svg'%}">
+<title>Proyect Mannager</title>
+</head>
 
-        <div class="name-t"><h1>Proyect Mannager</h1></div>
-        <div class="wellcome-t">
-          <p>
-            Welcome <br />
-            Just login or create an account <br />
-            and we can get started
-          </p>
-        </div>
-        <div class="link-t"><a href="login/">Let's go</a></div>
+<body>
+<header>
 
-      </div>
-      <div class="filler2"></div>
-    </main>
-  </body>
+<h2><img src="{% static 'img/icon.svg'%}" alt="Logo"> Welcome</h2>
+</header>
+<main>
+<div class="filler1"></div>
+<div class="main">
+
+<div class="name-t">
+<h1>Proyect Mannager</h1>
+</div>
+<div class="wellcome-t">
+<p>
+Welcome <br /> Just login or create an account <br /> and we can get started
+</p>
+</div>
+<div class="link-t"><a href="login/">Let's go</a></div>
+
+</div>
+<div class="filler2"></div>
+</main>
+</body>
+
 </html>
