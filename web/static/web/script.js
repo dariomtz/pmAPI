@@ -25,7 +25,7 @@ function getSigUpData() {
   let password = $("#password").val();
   let sigUp = {
     username: username,
-    name: name,
+    first_name: name,
     last_name: lastname,
     email: email,
     password: password
